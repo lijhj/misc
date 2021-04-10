@@ -11,12 +11,12 @@
     "editor.fontSize": 14,
     "editor.fontWeight": "bold",
     "editor.hover.enabled": false,
-    "editor.lineNumbers": "on",
+    // "editor.lineNumbers": "off",
     "editor.minimap.enabled": false,
     "editor.renderLineHighlight": "all",
     "editor.roundedSelection": false,
     "editor.rulers": [80],
-    //"editor.wordWrap": "wordWrapColumn", //wordwrap
+    // "editor.wordWrap": "wordWrapColumn", //wordwrap
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "explorer.openEditors.sortOrder": "alphabetical",
@@ -31,8 +31,8 @@
         "**/.hg": true,
         "**/.svn": true,
         "**/.vscode": true,
-        "**/*.d": true, // dep files
-        "**/*.o": true, // obj files
+        "**/*.d": true, //dep files
+        "**/*.o": true, //obj files
         "**/*.qbk": true,
     },
     "files.insertFinalNewline": true,
