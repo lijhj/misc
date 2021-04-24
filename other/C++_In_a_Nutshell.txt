@@ -64,3 +64,17 @@ An array initializer can be empty, which forces all elements to be initialized t
 the initializer is empty, the array size must be specified. Omitting the initializer
 entirely causes all elements of the array to be uninitialized (except non-POD
 types, which are initialized with their default constructors).
+
+6
+
+[Virtual Functions]
+
+    struct base {
+        virtual void func( );
+    };
+    struct derived : base {
+        virtual void func( ); // Overload
+    };
+    base* b = new derived;    // Static type of b is base*.
+                              // Dynamic type is derived*.
+    b->func( );               // Calls dynamic::func( )
