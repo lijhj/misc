@@ -1,4 +1,4 @@
-// swift package manager
+// swift package manager 
 
 // https://nativeconnect.app/blog/sharing-modules-using-swift-package-manager/
 
@@ -6,7 +6,7 @@
 
 // https://github.com/Samasaur1/Solver/blob/main/Package.swift
 
-----
+---
 
 $ mkdir helloSwift
 $ cd helloSwift
