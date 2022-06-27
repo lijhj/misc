@@ -2,6 +2,7 @@
     "breadcrumbs.enabled": false,
     "C_Cpp.dimInactiveRegions": false,
     "C_Cpp.errorSquiggles": "Disabled",
+    "C_Cpp.formatting": "Disabled",
     "debug.showBreakpointsInOverviewRuler": true,
     "debug.onTaskErrors": "showErrors",
     "diffEditor.maxComputationTime": 0,
