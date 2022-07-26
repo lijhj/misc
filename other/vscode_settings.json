@@ -4,7 +4,6 @@
     "C_Cpp.errorSquiggles": "Disabled",
     "C_Cpp.formatting": "Disabled",
     "clangd.arguments": [
-        //LLVM, Google, Chromium, Mozilla, WebKit, Microsoft, GNU, InheritParentConfig, None,
         "--fallback-style=None",
     ],
     "clangd.fallbackFlags": [
@@ -60,7 +59,6 @@
     "git.ignoreRebaseWarning": true,
     "http.proxySupport": "off",
     "outline.icons": false,
-    "outline.problems.badges": false,
     "outline.showArrays": false,
     "outline.showBooleans": false,
     "outline.showConstants": false,
@@ -74,7 +72,6 @@
     "outline.showProperties": false,
     "outline.showStrings": false,
     "outline.showVariables": false,
-    "problems.decorations.enabled": false,
     "terminal.integrated.tabs.enabled": false,
     "window.title": "${activeEditorLong}",
     "workbench.editor.untitled.hint": "hidden",
