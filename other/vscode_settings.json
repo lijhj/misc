@@ -75,9 +75,14 @@
   "outline.showProperties": false,
   "outline.showStrings": false,
   "outline.showVariables": false,
+  "rust-analyzer.hover.actions.enable": false,
+  "rust-analyzer.lens.enable": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
   "terminal.integrated.tabs.enabled": false,
+  "vim.hlsearch": true,
+  "vim.overrideCopy": false,
+  "vim.wrapscan": false,
   "window.title": "${activeEditorLong}",
   "workbench.editor.showIcons": false,
   "workbench.editor.untitled.hint": "hidden",
@@ -85,7 +90,4 @@
   "workbench.settings.editor": "json", //ui
   "workbench.settings.useSplitJSON": true,
   "workbench.startupEditor": "newUntitledFile",
-  "vim.hlsearch": true,
-  "vim.overrideCopy": false,
-  "vim.wrapscan": false,
 }
