@@ -10,14 +10,13 @@
     "--header-insertion=never",
   ],
   "clangd.fallbackFlags": [
-    // "-std=c99",
-    "-std=c++2a",
-    // "-I${workspaceFolder}",
+    // "-std=c++2a",
     // "-I${workspaceFolder}/boost",
   ],
   "clangd.semanticHighlighting": false,
   "debug.onTaskErrors": "showErrors",
   "debug.showBreakpointsInOverviewRuler": true,
+  "diffEditor.ignoreTrimWhitespace": true,
   "diffEditor.maxComputationTime": 0,
   "editor.codeLens": false,
   "editor.copyWithSyntaxHighlighting": false,
@@ -66,6 +65,9 @@
   "git.autofetch": true,
   "git.enableSmartCommit": true,
   "git.ignoreRebaseWarning": true,
+  "go.toolsEnvVars": {
+    "LD_LIBRARY_PATH": "/path/to/lib",
+  },
   "http.proxySupport": "off",
   "outline.icons": false,
   "outline.showArrays": false,
@@ -89,7 +91,6 @@
   "rust-analyzer.lens.enable": false,
   "terminal.integrated.persistentSessionReviveProcess": "never",
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
-  "terminal.integrated.tabs.enabled": false,
   "vim.hlsearch": true,
   "vim.overrideCopy": false,
   "vim.wrapscan": false,
@@ -100,4 +101,5 @@
   "workbench.settings.editor": "json", //ui
   "workbench.settings.useSplitJSON": true,
   "workbench.startupEditor": "newUntitledFile",
+
 }
