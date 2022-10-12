@@ -10,7 +10,7 @@
     "--header-insertion=never",
   ],
   "clangd.fallbackFlags": [
-    // "-std=c++2a",
+    "-std=c++2a",
     // "-I${workspaceFolder}/boost",
   ],
   "clangd.semanticHighlighting": false,
