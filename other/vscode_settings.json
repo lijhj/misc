@@ -36,12 +36,12 @@
   "editor.renderWhitespace": "boundary",
   "editor.roundedSelection": false,
   "editor.rulers": [
-    80
+    72, //python pep8
   ],
   "editor.semanticHighlighting.enabled": false,
   "editor.suggest.showIcons": false,
   // "editor.wordWrap": "wordWrapColumn", //
-  "editor.wordWrapColumn": 80,
+  "editor.wordWrapColumn": 72,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "explorer.openEditors.sortOrder": "alphabetical",
