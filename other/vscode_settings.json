@@ -16,7 +16,7 @@
   "clangd.semanticHighlighting": false,
   "debug.onTaskErrors": "showErrors",
   "debug.showBreakpointsInOverviewRuler": true,
-  "diffEditor.ignoreTrimWhitespace": true,
+  "diffEditor.ignoreTrimWhitespace": false,
   "diffEditor.maxComputationTime": 0,
   "editor.codeLens": false,
   "editor.copyWithSyntaxHighlighting": false,
@@ -40,7 +40,7 @@
   ],
   "editor.semanticHighlighting.enabled": false,
   "editor.suggest.showIcons": false,
-  // "editor.wordWrap": "wordWrapColumn", //
+  "editor.wordWrap": "wordWrapColumn", //
   "editor.wordWrapColumn": 72,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
@@ -103,5 +103,4 @@
   "workbench.settings.editor": "json", //ui
   "workbench.settings.useSplitJSON": true,
   "workbench.startupEditor": "newUntitledFile",
-
 }
