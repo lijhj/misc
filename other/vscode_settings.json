@@ -12,6 +12,7 @@
   ],
   "clangd.fallbackFlags": [
     // "-std=c++2a",
+    "-Ihello"
     // "-I${workspaceFolder}/boost",
   ],
   "clangd.semanticHighlighting": false,
@@ -34,14 +35,13 @@
     "other": "off",
   },
   "editor.renderLineHighlight": "all",
-  "editor.renderWhitespace": "boundary",
   "editor.roundedSelection": false,
   "editor.rulers": [
     72,
   ],
   "editor.semanticHighlighting.enabled": false,
   "editor.suggest.showIcons": false,
-  "editor.wordWrap": "wordWrapColumn", //
+  // "editor.wordWrap": "wordWrapColumn", //
   "editor.wordWrapColumn": 72,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
@@ -91,7 +91,7 @@
   "rust-analyzer.hover.actions.enable": false,
   "rust-analyzer.inlayHints.typeHints.enable": false,
   "rust-analyzer.lens.enable": false,
-  "terminal.integrated.persistentSessionReviveProcess": "never",
+  "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
   "vim.hlsearch": true,
   "vim.overrideCopy": false,
