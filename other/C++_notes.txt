@@ -48,17 +48,17 @@ string s4 = string(10, ’c’);
 
 int main()
 {
-    unsigned char a = UCHAR_MAX;
-    unsigned short b = USHRT_MAX;
-    unsigned int c = UINT_MAX;
-    unsigned long d = ULONG_MAX;
+    unsigned char      a = UCHAR_MAX;
+    unsigned short     b = USHRT_MAX;
+    unsigned int       c = UINT_MAX;
+    unsigned long      d = ULONG_MAX;
     unsigned long long e = ULLONG_MAX;
 
-    std::cout << a + 1 << "\n"; // 256
-    std::cout << b + 1 << "\n"; // 65536
-    std::cout << c + 1 << "\n"; // 0
-    std::cout << d + 1 << "\n"; // 0
-    std::cout << e + 1 << "\n"; // 0
+    std::cout <<       a + 1 << "\n"; // 256
+    std::cout <<       b + 1 << "\n"; // 65536
+    std::cout <<       c + 1 << "\n"; // 0
+    std::cout <<       d + 1 << "\n"; // 0
+    std::cout <<       e + 1 << "\n"; // 0
 }
 
 
@@ -98,6 +98,10 @@ int main() {
   const std::string &b = std::string("abc");    //ok
   const char *c = b.c_str();                    //ok
   std::cout << c << "\n";
+
+  //or, use an intermediate temporary variable
+  std::string tmp = std::string("abc");
+  const char *p = tmp.c_str();
 }
 
 
