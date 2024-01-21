@@ -98,10 +98,6 @@ int main() {
   const std::string &b = std::string("abc");    //ok
   const char *c = b.c_str();                    //ok
   std::cout << c << "\n";
-
-  //or, use an intermediate temporary variable
-  std::string tmp = std::string("abc");
-  const char *p = tmp.c_str();
 }
 
 
@@ -154,6 +150,24 @@ $ 7.12.1, C A reference manual, 5th
 - after the first operand of a &&, ||, ?:, or comma operator
 - after the evaluation of the arguments and function expression in a
     function call
+
+
+// https://c-faq.com/expr/seqpoints.html
+
+Between the previous and next sequence point an object shall have its
+stored value modified at most once by the evaluation of an expression.
+Furthermore, the prior value shall be accessed only to determine the
+value to be stored.
+
+- full expression or expression statement has sequence point at its end,
+  subexpresion has sequence point only there is  &&  ||  :?  ,  in it.
+
+- a variable can be modified only once within one single sequence point.
+
+  i = i++ ;    // error
+  i++ * i++ ;  // error
+  i = i+1 ;    // ok
+  i++ && i++ ; // ok
 
 
 ---
