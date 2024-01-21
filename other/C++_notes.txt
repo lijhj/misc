@@ -98,6 +98,10 @@ int main() {
   const std::string &b = std::string("abc");    //ok
   const char *c = b.c_str();                    //ok
   std::cout << c << "\n";
+
+  //or, use an intermediate temporary variable
+  std::string tmp = std::string("abc");
+  const char *p = tmp.c_str();
 }
 
 
