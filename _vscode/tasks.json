@@ -1,8 +1,10 @@
+// clangd codelldb on macos linux
+
 {
   "tasks": [
     {
-      "type": "cppbuild", // "shell",
       "label": "make",
+      "type": "shell",
       "command": "/usr/bin/make",
       "args": [],
       "options": {
