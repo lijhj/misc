@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Debug",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${fileDirname}/${fileBasenameNoExtension}",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "environment": [],
+      "MIMode": "lldb", // "gdb",
+      "preLaunchTask": "make",
+    }
+  ],
+  "version": "0.2.0",
+}
