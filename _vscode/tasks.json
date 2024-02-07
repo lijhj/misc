@@ -3,8 +3,8 @@
 {
   "tasks": [
     {
-      "label": "make",
       "type": "shell",
+      "label": "make",
       "command": "/usr/bin/make",
       "args": [],
       "options": {
