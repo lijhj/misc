@@ -4,24 +4,20 @@
 fn main() {
     let mut haystack = vec![
         Foo{name: String::from("apple"), num: 1,},
-        Foo{name: String::from("banana"), num: 2,},
-        Foo{name: String::from("banana"), num: 2,},
+        Foo{name: String::from("banana"), num: 2,}, //dup
+        Foo{name: String::from("banana"), num: 2,}, //dup
         Foo{name: String::from("orange"), num: 3,},
     ];
     let needle =
-        Foo{name: String::from("banana"), num: 2,};
+        Foo{name: String::from("banana"), num: 2,}; // "aaabanana", "banana", "zzzbanana"
 
     haystack.sort();
 
-    // cppreference.com, html-book-20230810/reference/en/cpp/algorithm/lower_bound.html ,
-    // partitioned with respect to the expression element < value (or comp(element, value)),
-
     let lower = haystack.partition_point(|x| x < &needle);
 
-    // cppreference.com, html-book-20230810/reference/en/cpp/algorithm/upper_bound.html ,
-    // partitioned with respect to the expression !(value < element) or !comp(value, element),
-
-    let upper = haystack.partition_point(|x| !(&needle < x));
+    let upper = haystack.partition_point(|x| (x <= &needle));
+    // let upper = haystack.partition_point(|x| (&needle >= x));
+    // let upper = haystack.partition_point(|x| !(&needle < x));
 
     if lower == upper {
         println!("not found");
@@ -39,8 +35,9 @@ struct Foo {
 
 //---
 
-// c++ equal_range, lower_bound, upper_bound, partition_point,
-// quick sort, binary search,
+
+// c++ partition_point, quick sort, binary search,
+// equal_range, lower_bound, upper_bound,
 
 #include <iostream>
 #include <string>
@@ -62,131 +59,49 @@ struct T {
 int main() {
     std::vector<T> haystack = {
         {"apple", 1},
-        {"banana", 2},
-        {"banana", 2},
+        {"banana", 2}, //dup
+        {"banana", 2}, //dup
         {"orange", 3},
     };
-    T needle{"banana", 2};
+    T needle{"banana", 2}; //"aaabanana", "banana", "zzzbanana"
 
     std::sort(haystack.begin(), haystack.end());
 
-    // cppreference.com, html-book-20230810/reference/en/cpp/algorithm/lower_bound.html ,
-    // partitioned with respect to the expression element < value (or comp(element, value)),
+    {
+        auto first = std::partition_point(begin(haystack), end(haystack), [&needle](const T &t) {
+            return std::tie(t.name, t.num) < std::tie(needle.name, needle.num);
+        });
 
-    auto first = std::partition_point(begin(haystack), end(haystack), [&needle](const T &t) {
-        // element < value
-        return std::tie(t.name, t.num) < std::tie(needle.name, needle.num);
-    });
+        auto last = std::partition_point(begin(haystack), end(haystack), [&needle](const T &t) {
+            return std::tie(t.name, t.num) <= std::tie(needle.name, needle.num);
+            // return std::tie(needle.name, needle.num) >= std::tie(t.name, t.num);
+            // return !(std::tie(needle.name, needle.num) < std::tie(t.name, t.num));
+        });
 
-    // cppreference.com, html-book-20230810/reference/en/cpp/algorithm/upper_bound.html ,
-    // partitioned with respect to the expression !(value < element) or !comp(value, element),
+        for (auto it = first; it != last; ++it) {
+            std::cout << __LINE__ << ": " << "name: " << it->name << ", num: " << it->num << std::endl;
+        }
+    }
 
-    auto last = std::partition_point(begin(haystack), end(haystack), [&needle](const T &t) {
-        // !(value < element)
-        return !(std::tie(needle.name, needle.num) < std::tie(t.name, t.num));
-    });
 
-    for (auto it = first; it != last; ++it) {
-        std::cout << "name: " << it->name << ", num: " << it->num << std::endl;
+    {
+        auto first = lower_bound(haystack.begin(), haystack.end(), needle);
+        auto last = upper_bound(haystack.begin(), haystack.end(), needle);
+
+        for (auto it = first; it != last; ++it) {
+            std::cout << __LINE__ << ": " << "name: " << it->name << ", num: " << it->num << std::endl;
+        }
+    }
+
+
+    {
+        auto [first, last] = equal_range(haystack.begin(), haystack.end(), needle);
+
+        for (auto it = first; it != last; ++it) {
+            std::cout << __LINE__ << ": " << "name: " << it->name << ", num: " << it->num << std::endl;
+        }
     }
 
     return 0;
 }
 
-//---
-
-#include <iostream>
-#include <string_view>
-#include <vector>
-#include <map>
-#include <tuple>
-
-#include <algorithm>
-
-struct T {
-    std::string name;
-    int num;
-    friend bool operator< (const T &a, const T &b){
-        return std::tie(a.name, a.num) < std::tie(b.name, b.num);
-    }
-};
-
-int main() {
-    std::vector<T> haystack = {
-        {"apple", 1},
-        {"banana", 2},
-        {"banana", 2},
-        {"banana", 2},
-        {"orange", 3},
-    };
-    T needle{"banana", 2};
-
-    auto comp1 = [&needle](const T &t){
-        return tie(t.name, t.num) < tie(needle.name, needle.num);
-    };
-    auto comp2 = [&needle](const T &t){
-        return tie(t.name, t.num) >= tie(needle.name, needle.num);
-    };
-
-    std::sort(haystack.begin(), haystack.end(), [](const T& a, const T& b) {
-        return tie(a.name, a.num) < tie(b.name, b.num);
-    });
-
-    auto first = lower_bound(haystack.begin(), haystack.end(), needle);
-    auto last = upper_bound(haystack.begin(), haystack.end(), needle);
-
-
-    for (auto it = first; it != last; ++it) {
-        std::cout << "name: " << it->name << ", num: " << it->num << std::endl;
-    }
-
-    return 0;
-}
-
-//---
-
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <tuple>
-
-struct T {
-    std::string name;
-    int num;
-    friend bool operator< (const T &a, const T &b){
-        return std::tie(a.name, a.num) < std::tie(b.name, b.num);
-    }
-};
-
-int main() {
-    std::vector<T> haystack = {
-        {"apple", 1},
-        {"banana", 2},
-        {"banana", 2},
-        {"banana", 2},
-        {"orange", 3},
-    };
-    T needle{"banana", 2};
-
-    auto comp1 = [&needle](const T &t){
-        return tie(t.name, t.num) < tie(needle.name, needle.num);
-    };
-    auto comp2 = [&needle](const T &t){
-        return tie(t.name, t.num) >= tie(needle.name, needle.num);
-    };
-
-    std::sort(haystack.begin(), haystack.end(), [](const T& a, const T& b) {
-        return tie(a.name, a.num) < tie(b.name, b.num);
-    });
-
-    auto [first, last] = equal_range(haystack.begin(), haystack.end(), needle);
-
-    for (auto it = first; it != last; ++it) {
-        std::cout << "name: " << it->name << ", num: " << it->num << std::endl;
-    }
-
-    return 0;
-}
-
-//---
