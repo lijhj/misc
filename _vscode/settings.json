@@ -19,12 +19,13 @@
   "clangd.fallbackFlags": [
     "-std=c++2a",
     "-I../foo",
-    "-I/home/ljh/Downloads/boost_1_82_0",
+
   ],
   "clangd.semanticHighlighting": false,
   "debug.onTaskErrors": "showErrors",
   "debug.showBreakpointsInOverviewRuler": true,
   "diffEditor.maxComputationTime": 0,
+  "editor.accessibilitySupport": "off",
   "editor.codeLens": false,
   "editor.copyWithSyntaxHighlighting": false,
   "editor.dragAndDrop": false,
@@ -59,10 +60,16 @@
   "git.enableSmartCommit": true,
   "git.ignoreRebaseWarning": true,
   "git.openRepositoryInParentFolders": "never",
+  "go.enableCodeLens": {
+    "references": false,
+    "runtest": false
+  },
+  "go.testExplorer.enable": false,
   "go.toolsEnvVars": {
     "LD_LIBRARY_PATH": "/path/to/lib",
   },
   "http.proxySupport": "off",
+  "lldb.evaluateForHovers": false,
   "outline.icons": false,
   "outline.showArrays": false,
   "outline.showBooleans": false,
