@@ -164,7 +164,7 @@ Copy initialization ordinarily uses the copy constructor.
 
 13.5:
 
-Calling move returns a result that causes construct to 
+Calling move returns a result that causes construct to
 use the string move constructor.
 
 13.6.1
@@ -180,29 +180,29 @@ to assign to it or to destroy it.
 
 13.6.2:
 
-The move versions take a StrVec&& and can be used only 
+The move versions take a StrVec&& and can be used only
 when the argument is a (nonconst) rvalue
 
 13.6.2:
 
-For example, assuming both hp and hp2 are HasPtr objects: 
+For example, assuming both hp and hp2 are HasPtr objects:
 
 hp = hp2; // hp2 is an lvalue; copy constructor used to copy hp2
 hp = std::move(hp2); // move constructor moves hp2
 
-In the first assignment, 
-the right-hand operand is an lvalue, 
-so the move constructor is not viable. 
-The copy constructor will be used to initialize rhs. 
-The copy constructor will allocate a new string and copy the string 
+In the first assignment,
+the right-hand operand is an lvalue,
+so the move constructor is not viable.
+The copy constructor will be used to initialize rhs.
+The copy constructor will allocate a new string and copy the string
 to which hp2 points.
 
-In the second assignment, 
-we invoke std::move to bind an rvalue reference to hp2. In this case, 
-both the copy constructor and the move constructor are viable. 
-However, because the argument is an rvalue reference, 
-it is an exact match for the move constructor. 
-The move constructor copies the pointer from hp2. 
+In the second assignment,
+we invoke std::move to bind an rvalue reference to hp2. In this case,
+both the copy constructor and the move constructor are viable.
+However, because the argument is an rvalue reference,
+it is an exact match for the move constructor.
+The move constructor copies the pointer from hp2.
 It does not allocate any memory.
 
 15.3
@@ -219,4 +219,16 @@ The object can be a base-class object or an object of a derived class. If the fu
 virtual, then the decision as to which function to run is delayed until run time. The
 version of the virtual function that is run is the one defined by the type of the object
 to which the reference is bound or to which the pointer points.
+
+17.1.1
+
+we can supply an initializer for each member as we do in the initialization of someVal.
+This tuple constructor is explicit (§ 7.5.4, p. 296),
+so we must use the direct initialization syntax
+
+tuple<string, vector<double>, int, list<int>>
+    someVal("constants", {3.14, 2.718}, 42, {0,1,2,3,4,5});
+
+tuple<size_t, size_t, size_t>
+    threeD{1,2,3};
 
