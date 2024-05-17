@@ -323,5 +323,14 @@ when it's reasonably easy to ensure that the final store of the final value
   i = i+1 ;    // ok
   i++ && i++ ; // ok
 
+---
+
+https://en.cppreference.com/w/cpp/language/eval_order
+
+In every simple assignment expression E1 = E2 and
+every compound assignment expression E1 @= E2, every value computation
+and side effect of E2 is sequenced before every value computation
+and side effect of E1.
 
 ---
+
