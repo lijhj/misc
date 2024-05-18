@@ -99,6 +99,96 @@ int main()
 ---
 
 
+https://c-faq.com/expr/intoverflow1.html
+
+int a = INT_MAX;
+int b = INT_MAX;
+long int c = a * b; // error
+long int c = (long int)(a * b); // error, conversion, it happens too late
+
+Under C's integral promotion rules, the multiplication is carried out
+using int arithmetic, and the result may overflow or be truncated before
+being promoted and assigned to the long int left-hand side.
+Use an explicit cast on at least one of the operands to force long arithmetic:
+
+    int a = INT_MAX;
+    int b = INT_MAX; // or, long b = INT_MAX;
+	long int c = (long int)a * b;
+	long int d = ((long int)a) * b;
+	long int e = (1L * a) * b;
+
+
+---
+
+
+https://c-faq.com/misc/intovf.html
+
+How can I ensure that integer arithmetic doesn't overflow?
+
+The usual approach is to test the operands against the limits in the
+header file <limits.h> before doing the operation. For example,
+here is a ``careful'' addition function:
+
+int
+chkadd(int a, int b)
+{
+	if(INT_MAX - b < a) {
+		fputs("int overflow\n", stderr);
+		return INT_MAX;
+	}
+	return a + b;
+}
+
+Here is a complete set of three functions for ``careful''
+addition, subtraction, and multiplication.
+(Note: these functions are still not perfect, and may fail if invoked on
+various edge cases, such as the smallest negative integer, INT_MIN.)
+
+#include <stdio.h>
+#include <limits.h>
+
+int
+chkadd(int a, int b)
+{
+	if(b < 0)
+		return chksub(a, -b);
+	if(INT_MAX - b < a) {
+		fputs("int overflow\n", stderr);
+		return INT_MAX;
+	}
+	return a + b;
+}
+
+int
+chksub(int a, int b)
+{
+	if(b < 0)
+		return chkadd(a, -b);
+	if(INT_MIN + b > a) {
+		fputs("int underflow\n", stderr);
+		return INT_MIN;
+	}
+	return a - b;
+}
+
+int
+chkmul(int a, int b)
+{
+	int sign = 1;
+	if(a == 0 || b == 0) return 0;
+	if(a < 0) { a = -a; sign = -sign; }
+	if(b < 0) { b = -b; sign = -sign; }
+	if(INT_MAX / b < a) {
+		fputs("int overflow\n", stderr);
+		return (sign > 0) ? INT_MAX : INT_MIN;
+	}
+	return sign * a * b;
+}
+
+
+---
+
+
 // https://en.cppreference.com/w/cpp/language/implicit_conversion
 
 prvalues of small integral types (such as char) may be converted to
@@ -149,6 +239,7 @@ int main() {
 
 ---
 
+
 // struct literal, temporary,
 
 struct T{};
@@ -160,7 +251,9 @@ compound literals, which look similar, are lvalues
 https://en.cppreference.com/w/c/language/compound_literal :
 The value category of a compound literal is lvalue (its address can be taken)
 
+
 ---
+
 
 chatGPT:
 
@@ -187,6 +280,7 @@ If you have any further questions, feel free to ask.
 
 
 ---
+
 
 //https://en.cppreference.com/w/cpp/language/expressions#Literals
 //Literals are the tokens of a C++ program that represent constant values
@@ -311,7 +405,9 @@ when it's reasonably easy to ensure that the final store of the final value
   i = i + 1;  // ok
   i++ && i++; // ok
 
+
 ---
+
 
 https://c-faq.com/expr/confused.html
 
@@ -327,23 +423,6 @@ because although the object i appears twice and is modified,
 the appearance (on the right-hand side) which fetches i's old value
 is used to compute i's new value.
 
----
-
-https://c-faq.com/expr/intoverflow1.html
-
-int a = INT_MAX, b = INT_MAX;
-long int c = a * b; // error
-long int c = (long int)(a * b); // error, conversion, it happens too late
-
-Under C's integral promotion rules, the multiplication is carried out
-using int arithmetic, and the result may overflow or be truncated before
-being promoted and assigned to the long int left-hand side.
-Use an explicit cast on at least one of the operands to force long arithmetic:
-
-    int a = INT_MAX, b = INT_MAX;
-	long int c = (long int)a * b;
-	long int d = ((long int)a) * b;
-	long int e = (1L * a) * b;
 
 ---
 
