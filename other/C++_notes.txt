@@ -149,6 +149,7 @@ int main() {
 
 ---
 
+// struct literal, temporary,
 
 struct T{};
 (struct T){} = (struct T){};
@@ -158,6 +159,8 @@ compound literals, which look similar, are lvalues
 
 https://en.cppreference.com/w/c/language/compound_literal :
 The value category of a compound literal is lvalue (its address can be taken)
+
+---
 
 chatGPT:
 
@@ -181,21 +184,6 @@ Therefore, the answer to your question is yes, compound literals in C
 are assignable.
 
 If you have any further questions, feel free to ask.
-
-
----
-
-
-// struct literal, temporary,
-
-struct T{};
-(struct T){} = (struct T){};
-
-https://en.cppreference.com/w/c/language/value_category :
-compound literals, which look similar, are lvalues
-
-https://en.cppreference.com/w/c/language/compound_literal :
-The value category of a compound literal is lvalue (its address can be taken)
 
 
 ---
@@ -317,20 +305,45 @@ when it's reasonably easy to ensure that the final store of the final value
 (into i, in this case) doesn't interfere with the earlier accesses.
 
 
-  i = i++ ;    // error
-  i++ * i++ ;  // error
-  i = i + 1;   // ok
-  i = i+1 ;    // ok
-  i++ && i++ ; // ok
+  i = i++;    // error
+  i++ * i++;  // error
+  i = i + 1;  // ok
+  i = i + 1;  // ok
+  i++ && i++; // ok
 
 ---
 
-https://en.cppreference.com/w/cpp/language/eval_order
+https://c-faq.com/expr/confused.html
 
-In every simple assignment expression E1 = E2 and
-every compound assignment expression E1 @= E2, every value computation
-and side effect of E2 is sequenced before every value computation
-and side effect of E1.
+If an object (as defined above) appears more than once in an expression,
+and is the object modified in the expression, make sure that all
+appearances of the object which fetch its value participate in the
+computation of the new value which is stored.
+This rule allows the expression
+
+	i = i + 1
+
+because although the object i appears twice and is modified,
+the appearance (on the right-hand side) which fetches i's old value
+is used to compute i's new value.
+
+---
+
+https://c-faq.com/expr/intoverflow1.html
+
+int a = INT_MAX, b = INT_MAX;
+long int c = a * b; // error
+long int c = (long int)(a * b); // error, conversion, it happens too late
+
+Under C's integral promotion rules, the multiplication is carried out
+using int arithmetic, and the result may overflow or be truncated before
+being promoted and assigned to the long int left-hand side.
+Use an explicit cast on at least one of the operands to force long arithmetic:
+
+    int a = INT_MAX, b = INT_MAX;
+	long int c = (long int)a * b;
+	long int d = ((long int)a) * b;
+	long int e = (1L * a) * b;
 
 ---
 
