@@ -159,6 +159,41 @@ Overflow for signed arithmetic yields undefined behavior (7.1).
 ---
 
 
+"                                                                   "
+"  K&R C 2nd, A4.2:                                                 "
+"  obey the laws of arithmetic modulo 2^n                           "
+"  arithmetic on unsigned quantities can never overflow             "
+"                                                                   "
+"  unsigned integers                                                "
+"                                                                   "
+"          M  M                                                     "
+"          A  I                                                     "
+"          X, N,                                                    "
+"             0,                                                    "
+"          *  *   1,                                                "
+"       *        *                                                  "
+"      *          *                                                 "
+"      *          *                                                 "
+"       *        *                                                  "
+"          *  *                                                     "
+"                                                                   "
+"  ---------------------------------------------------------------  "
+"                                                                   "
+"  K&R C 2nd, A6.2:                                                 "
+"  When any integer is converted to a signed type,                  "
+"  the value is unchanged if it can be represented in the new type  "
+"  and is implementation-defined otherwise.                         "
+"                                                                   "
+"  signed int                                                       "
+"                                                                   "
+"  MIN, ..  -2,-1, 0, 1, 2, ..  MAX,                                "
+"   *  *  *  *  *  *  *  *  *  *  *                                 "
+"                                                                   "
+
+
+---
+
+
 https://c-faq.com/misc/intovf.html
 
 How can I ensure that integer arithmetic doesn't overflow?
