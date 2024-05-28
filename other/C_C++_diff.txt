@@ -1,0 +1,69 @@
+difference in c and c++
+
+
+---
+
+
+Export C programming, chapter 11:
+
+Improvements in C++ Over C:
+
+1. The error-prone construct of initializing a char array without enough
+  room for the trailing nul is regarded as an error.
+     char b[3]="Bob";
+  will cause an error in C++, but not in C.
+
+2. A typecast can be written in the more normal-looking format
+  of float(i) as well as the strange-looking C style of (float)i.
+
+3. C++ allows a constant integer to define the size of an array.
+    const int size=128;
+    char a[size];
+  is allowed in C++, but will generate an error message from C.
+
+4. Declarations can be intermingled with statements, dropping the C
+  requirement that all declarations precede all statements in a block.
+  It's great that this arbitrary rule was dropped. Since this fix causes
+  an incompatibility with C, why not go the whole way and provide a
+  simpler alternative that fixes the horrible C declaration syntax, too?
+
+
+Restrictions in C++ that are not in C:
+
+1. The main() routine may not be called by user code in C++. This is
+  permitted (but most unusual) in C.
+
+2. Function prototypes are mandatory in C++, but optional in C.
+
+3. Typedef names cannot clash with struct tags in C++, but they can
+  in C (they belong to separate namespaces).
+
+4. A cast is required to assign a void * pointer to another pointer type
+  in C++; no cast is require d in C.
+
+
+Features in C++ that mean something different in C:
+
+1. There are more than a dozen new keywords in C++. These may be used as
+  identifiers in a C program, but such use will usually generate an
+  error message from a C++ compiler.
+
+2. A declaration can appear anywhere a statement can in C++; in C,
+  declarations must appear before statements in a block.
+
+3. A struct name in an inner scope will hide an object name in an
+  outer scope in C++, but not in C.
+
+4. Character literals have type char in C++, but type int in C.
+  That is, sizeof('a') yields 1 in C++ and a larger value in C.
+
+5. Pathological cases involving the // comment convention of C++.
+
+
+---
+
+
+In C++, the auto keyword is used to declare automatic variables.
+In C, the auto keyword is used to declare automatic variables,
+but it is optional.
+
