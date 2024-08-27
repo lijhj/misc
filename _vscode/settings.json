@@ -13,7 +13,7 @@
   // "C_Cpp.formatting": "clangFormat",
   "C_Cpp.formatting": "none",
   "clangd.arguments": [
-    "--fallback-style=None",
+    // "--fallback-style=None",
     "--header-insertion=never",
   ],
   "clangd.fallbackFlags": [
@@ -31,6 +31,7 @@
   "editor.dragAndDrop": false,
   "editor.folding": false,
   "editor.fontSize": 15,
+  "editor.formatOnSave": true,
   "editor.hover.enabled": false,
   "editor.inlayHints.enabled": "off",
   "editor.lightbulb.enabled": "off",
@@ -123,5 +124,4 @@
   "workbench.settings.useSplitJSON": true,
   "workbench.startupEditor": "newUntitledFile",
   "workbench.tree.enableStickyScroll": false,
-
 }
