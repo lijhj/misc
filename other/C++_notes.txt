@@ -751,3 +751,111 @@ int main() {
 
 
 ---
+
+
+// find possible multiple occurences of substring in a range
+// in a larger string in c++.
+
+#include <algorithm>
+#include <iostream>
+#include <string>
+
+int main() {
+  const std::string haystack = "abcdEabcdEabcdEabcd";
+  const std::string needle = "abcd";
+  const int firstPosition = 1;
+  const int lastPosition = 16;
+
+  // const std::string haystack = "abababa";
+  // const std::string needle = "aba";
+  // const int firstPosition = 0;
+  // const int lastPosition = haystack.size();
+
+  for (auto i = begin(haystack) + firstPosition,
+            j = begin(haystack) + lastPosition;
+       i != j;) {
+    auto k = std::search(i, j, begin(needle), end(needle));
+    if (k != j) {
+      std::cout << k - begin(haystack) << "\n";
+      i = k + needle.size();
+    } else {
+      i++;
+    }
+  }
+  return 0;
+}
+
+// 1. the substring needle could contain more than one characters,
+//     this eliminates the std::string::find_first_of, std::find_first_of,
+//     because both can search for one single character from a set in a larger string.
+
+// 2. i need to search in a range in the larger string for a substring,
+//     this eliminates the std::string::find, because it has no way to specify that range.
+
+// 3. std::search is the only way which can fulfill the requirement.
+
+
+//---
+
+
+// Converting from Iterator to Reverse Iterator.
+#include <iostream>
+#include <iterator>
+#include <vector>
+
+int main() {
+  std::vector<int> vec = {1, 2, 3, 4, 5};
+  auto it = vec.begin() + 2;
+  std::cout << *it << "\n"; // 3
+  // std::reverse_iterator<decltype(it)> rev_it(it); // ok
+  auto rev_it = std::make_reverse_iterator(it); // ok
+  std::cout << *rev_it << "\n";                 // 2
+  rev_it--;                                     // ok
+  std::cout << *rev_it << "\n";                 // 3, same element
+
+  return 0;
+}
+
+// Converting from Reverse Iterator to Iterator.
+// A reverse iterator points to the element that precedes the one it actually
+// represents. It is conceptually working backwards. Its .base() method will
+// return an iterator that points to the next element in the underlying
+// container (which means the original element before the reverse iteration).
+
+int main22() {
+  std::vector<int> vec = {1, 2, 3, 4, 5};
+  auto rev_it = vec.rbegin() + 2;
+  std::cout << *rev_it << "\n"; // 3
+  auto it = rev_it.base();
+  std::cout << *it << "\n"; // 4
+
+  it--;                     // ok
+  std::cout << *it << "\n"; // 3, same element
+
+  return 0;
+}
+
+
+//---
+
+
+// reserve:
+
+// std::string str;
+// str.reserve(100); // capacity == 100; size == 0;
+// std::vector<int> vec;
+// vec.reserve(100); // capacity == 100; size == 0;
+
+
+// initialize object with size:
+
+// if you specify a size, the allocation will typically occur once,
+// similar to calling reserve(), but it also initializes all elements.
+// reserve allocate storage but do not initialize elements.
+
+// std::string str(100, ' '); // size == 100
+// std::vector<int> v(100);   // size == 100
+
+
+//---
+
