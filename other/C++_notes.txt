@@ -775,22 +775,21 @@ int main() {
 // find possible multiple occurences of substring in a range
 // in a larger string in c++.
 
-int main() {
-  std::string haystack = "abaCabaCabaCaba";
-  std::string needle = "aba";
 
-  // std::string haystack = "abababababababa";
+int main() {
+  // std::string haystack = "abaCabaCabaCaba";
   // std::string needle = "aba";
 
-  const auto first = 0;                              // 1;
-  const auto last = end(haystack) - begin(haystack); // 13;
+  std::string haystack = "abababababababa";
+  std::string needle = "aba";
 
-  for (auto i = next(begin(haystack), first), j = next(begin(haystack), last);
-       i < j;) {
-    auto k = search(i, j, begin(needle), end(needle));
-    if (k != j) {
-      std::cout << distance(begin(haystack), k) << ",";
-      i = next(k, distance(begin(needle), end(needle)));
+  const auto first = 1; // 0;                              // 1;
+  const auto last = 13; // end(haystack) - begin(haystack); // 13;
+
+  for (auto i = begin(haystack) + first, j = begin(haystack) + last; i != j;) {
+    if (auto k = search(i, j, begin(needle), end(needle)); k != j) {
+      std::cout << k - begin(haystack) << ",";
+      i = end(needle) - begin(needle) + k;
     } else {
       i++;
     }
@@ -799,12 +798,13 @@ int main() {
   return 0;
 }
 
+
 /*
-abaCabaCabaCaba
+abaCabaCabaCaba, sub: aba
 0,4,8,12,
 4,8,
 
-abababababababa
+abababababababa, sub: aba
 0,4,8,12,
 2,6,10,
 */
