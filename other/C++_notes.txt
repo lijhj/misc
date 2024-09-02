@@ -18,6 +18,25 @@ assignment statement
 ---
 
 
+# Minimal Makefile
+
+# build dynamic library with -fPIC -shared
+CFLAGS   = -g # -O3 -fPIC # CXXFLAGS for .cpp
+CPPFLAGS = -MMD -MP # -I../foo -DNDEBUG
+LDFLAGS  = # -L../foo -shared
+LDLIBS   = # -lfoo
+#CC      = $(CXX) # link with CXX for .cpp
+
+# target name is basename of one of the source files
+main : $(patsubst %.c,%.o,$(wildcard *.c)) # .cpp
+-include *.d
+clean : ; -rm -fr *.o *.d main
+.PHONY : clean
+
+
+---
+
+
 // c/c++ initialization
 
 //  =  for initialization (and assignment): basic types
@@ -756,34 +775,40 @@ int main() {
 // find possible multiple occurences of substring in a range
 // in a larger string in c++.
 
-#include <algorithm>
-#include <iostream>
-#include <string>
-
 int main() {
-  const std::string haystack = "abcdEabcdEabcdEabcd";
-  const std::string needle = "abcd";
-  const int firstPosition = 1;
-  const int lastPosition = 16;
+  std::string haystack = "abaCabaCabaCaba";
+  std::string needle = "aba";
 
-  // const std::string haystack = "abababa";
-  // const std::string needle = "aba";
-  // const int firstPosition = 0;
-  // const int lastPosition = haystack.size();
+  // std::string haystack = "abababababababa";
+  // std::string needle = "aba";
 
-  for (auto i = begin(haystack) + firstPosition,
-            j = begin(haystack) + lastPosition;
-       i != j;) {
-    auto k = std::search(i, j, begin(needle), end(needle));
+  const auto first = 0;                              // 1;
+  const auto last = end(haystack) - begin(haystack); // 13;
+
+  for (auto i = next(begin(haystack), first), j = next(begin(haystack), last);
+       i < j;) {
+    auto k = search(i, j, begin(needle), end(needle));
     if (k != j) {
-      std::cout << k - begin(haystack) << "\n";
-      i = k + needle.size();
+      std::cout << distance(begin(haystack), k) << ",";
+      i = next(k, distance(begin(needle), end(needle)));
     } else {
       i++;
     }
   }
+  std::cout << "\n";
   return 0;
 }
+
+/*
+abaCabaCabaCaba
+0,4,8,12,
+4,8,
+
+abababababababa
+0,4,8,12,
+2,6,10,
+*/
+
 
 // 1. the substring needle could contain more than one characters,
 //     this eliminates the std::string::find_first_of, std::find_first_of,
