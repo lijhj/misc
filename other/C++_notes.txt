@@ -798,6 +798,41 @@ int main() {
 //---
 
 
+/*
+std::string s = "aaaaabaaaaab";
+std::string sub = "aaaaa";
+std::search_n(std::begin(s), std::end(s), 5, 'a');
+std::search(std::begin(s), std::end(s), begin(sub), end(sub));
+*/
+
+int main() {
+  std::string str = "aaaaabaaaaab";
+  std::string sub = "aaaaa"; // 5, 'a'
+  constexpr int len = 5;
+
+  for (auto i = begin(str); i != end(str); i++) {
+    auto j = search_n(i, end(str), len, 'a');
+    if (j != end(str)) {
+      std::cout << __LINE__ << ": " << j - begin(str) << "\n";
+      i = j;
+    }
+  }
+
+  for (auto i = begin(str); i != end(str); i++) {
+    auto j = search(i, end(str), begin(sub), end(sub));
+    if (j != end(str)) {
+      std::cout << __LINE__ << ": " << j - begin(str) << "\n";
+      i = j;
+    }
+  }
+
+  return 0;
+}
+
+
+//---
+
+
 // Converting from Iterator to Reverse Iterator.
 #include <iostream>
 #include <iterator>
@@ -858,4 +893,76 @@ int main22() {
 
 
 //---
+
+
+// cppreference.com, html-book-20240610/reference/en/cpp/algorithm/search_n.html:
+
+template<class Container, class Size, class T>
+constexpr bool consecutive_values(const Container& c, Size count, const T& v)
+{
+    return std::search_n(std::begin(c), std::end(c), count, v) != std::end(c);
+}
+
+int main()
+{
+    constexpr char sequence[] = ".0_0.000.0_0.";
+
+    static_assert(consecutive_values(sequence, 3, '0'));
+
+    for (int n : {4, 3, 2})
+        std::cout << std::boolalpha
+                  << "Has " << n << " consecutive zeros: "
+                  << consecutive_values(sequence, n, '0') << '\n';
+
+    std::vector<std::complex<double>> nums{{4, 2}, {4, 2}, {1, 3}};
+    #ifdef __cpp_lib_algorithm_default_value_type
+        auto it = std::search_n(nums.cbegin(), nums.cend(), 2, {4, 2});
+    #else
+        auto it = std::search_n(nums.cbegin(), nums.cend(), 2, std::complex<double>{4, 2});
+    #endif
+    assert(it == nums.begin());
+}
+
+1. because the consecutive_values is constexpr so static_assert can be used on the call to consecutive_values,
+because sequence is constexpr so consecutive_values can be constexpr,
+
+2. if the input sequence data is from user input at runtime, then sequence can not be constexpr,
+and consecutive_values can not be constexpr, and static_assert can not be used on the call to consecutive_values,
+
+---
+
+assert from the cassert will be ignored when NDEBUG is defined.
+static_assert can not be ignored, and it works at compile time when writing the program.
+static_assert evaluates expression at compile-time.
+
+---
+
+value qualified with keyword const does not meet the requirement of compile time evaluation.
+value qualified with keyword constexpr, consteval do meet the requirement of compile time evaluation.
+
+---
+
+const:
+Indicates that a variable's value cannot be modified after its initialization.
+it means it is a read-only value.
+it is not compile-time constant value;
+
+constexpr:
+When applied to variables,
+it means the variable is constant and must be initialized with a constant expression.
+When applied to functions,
+it means that the function can be evaluated at compile time if given constant expressions as arguments.
+
+consteval:
+indicates that a function is a compile-time function and
+must always produce a compile-time constant when called.
+
+constinit:
+Guarantees that a variable is initialized at compile time
+but does not enforce that it is immutable.
+It can be modified after initialization, unlike const.
+unlike constexpr, it does not require the variable to be truly constant throughout its lifetime.
+
+
+---
 
