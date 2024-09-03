@@ -188,10 +188,10 @@ Overflow for signed arithmetic yields undefined behavior (7.1).
 "          M  M                                                     "
 "          A  I                                                     "
 "          X, N,                                                    "
-"             0,                                                    "
-"          *  *   1,                                                "
+"             0                                                     "
+"          *  *   1                                                 "
 "       *        *                                                  "
-"      *          *                                                 "
+"      *          * 2                                               "
 "      *          *                                                 "
 "       *        *                                                  "
 "          *  *                                                     "
@@ -384,6 +384,13 @@ after lvalue-to-rvalue conversion, if applicable.
 
 
 // K&R C 2nd:
+
+2.3 Constants:
+An integer constant like 1234 is an int.
+A long constant is written with a terminal 1 (ell) or L, as in 123456789L;
+an integer too big to fit into an int will also be taken as a long.
+Unsigned constants are written with a terminal u or U,
+and the suffix ul or UL indicates unsigned long.
 
 2.7 Type Conversions:
 Otherwise, convert char and short to int.
@@ -1037,8 +1044,9 @@ K&R C 2.7:
 
   this is the automatic implicit arithmetic conversions,
   lower type is converted higher type.
+  The result is of the higher type.
 
-- all integral smaller than int are converted to int before arithmetic operation takes place.
+- all integral smaller than int are converted to int before arithmetic operation takes place;
 
 K&R C, A.6.1 Integral Promotion:
 
@@ -1051,13 +1059,43 @@ K&R C 4.1:
 - in function return, return value is converted to return type of the function;
 
 
-https://c-faq.com/expr/intoverflow1.html
+c-faq, 3.11, https://c-faq.com/expr/intoverflow1.html
 
 arithmetic operation is performed under using int arithmetic,
 explicitly convert individual operand larger than int to larger type.
 
   long int c = (long int)(a * b); // error, conversion, it happens too late
   long int c = (long int)a * b; // ok, explicit type conversion on operand
+
+
+int main() {
+  int intMax = INT_MAX;          // 2147483647, macOS 64bit;
+  int sqrtMax = sqrt(INT_MAX);   // 46340;
+  int powSqrt = pow(sqrtMax, 2); // 2147395600;
+  long int longMax = LONG_MAX;   // 9223372036854775807;
+
+  // the point of c-faq 3.11 is:
+  // operands a and b are both valid int,
+  // but expression a * b may exceed int,
+  // explicitly convert a operand to higer long int,
+  // and the result expression is the higher type.
+  a = sqrt(INT_MAX), b = sqrt(INT_MAX);
+  c = a * b * 10;
+  c2 = (long)a * b * 10;                // ok;
+  std::cout << c << ", " << c2 << "\n"; // -880480, 21473956000;
+
+  // K&R C, 2.3:
+  // an integer too big to fit into an int will also be taken as a long.
+  // integr literal may not need explicit conversion.
+  c = 463400 * 46340;                   // 46340 * 10 * 46340;
+  c2 = (long)463400 * 46340;            // 46340 * 10 * 46340;
+  std::cout << c << ", " << c2 << "\n"; // -880480, 21473956000;
+
+  double f = 10 / 3;          // 3;
+  double f2 = (double)10 / 3; // ok, 3.33;
+
+  return 0;
+}
 
 
 ---
