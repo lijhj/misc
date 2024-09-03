@@ -1093,7 +1093,7 @@ int main() {
 
   // K&R C, 2.3:
   // an integer too big to fit into an int will also be taken as a long.
-  // integr literal may not need explicit conversion.
+  // integer literal may not need explicit conversion.
   c = 463400 * 46340;                   // 46340 * 10 * 46340;
   c2 = (long)463400 * 46340;            // 46340 * 10 * 46340;
   std::cout << c << ", " << c2 << "\n"; // -880480, 21473956000;
