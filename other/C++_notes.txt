@@ -1042,8 +1042,15 @@ K&R C 2.7:
   like *, /, %, +, -, the narrower operand is promoted to the type of
   the wider operand without losing information.
 
-  this is the automatic implicit arithmetic conversions,
-  lower type is converted higher type.
+  When an operator has operands of different types, they are converted
+  to a common type according to a small number of rules. In general,
+  the only automatic conversions are those that convert a "narrower" operand
+  into a "wider" one without losing information.
+
+  Implicit arithmetic conversions work .much as expected.
+  In general, if an operator like + or * that takes two operands (a
+  binary operator) has operands of different types, the "lower" type is
+  promoted to the "higher" type before the operation proceeds.
   The result is of the higher type.
 
 - all integral smaller than int are converted to int before arithmetic operation takes place;
