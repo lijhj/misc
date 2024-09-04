@@ -1107,3 +1107,46 @@ int main() {
 
 ---
 
+
+// c++
+// typeid(var).name()
+// typeid(int).name()
+
+---
+
+#include <cxxabi.h>
+#include <typeinfo>
+
+
+template <typename T> std::string demangle(const T &t) {
+  int status = 0;
+  auto name = typeid(t).name();
+  std::unique_ptr<char, void (*)(void *)> res(
+      abi::__cxa_demangle(name, nullptr, nullptr, &status), std::free);
+  return (status == 0) ? res.get() : name;
+}
+
+
+int main() {
+    auto a1 = std::string::npos;
+    auto a2 = typeid(a1).name(); // m
+    auto a3 = demangle(a1); // unsigned long
+    return 0;
+}
+
+
+---
+
+
+  //     *void: v;
+  //      char: c;      unsigned char: h;
+  //     short: s;     unsigned short: t;
+  //       int: i;       unsigned int: j;
+  //      long: l;      unsigned long: m;
+  // long long: x; unsigned long long: y;
+  //     float: f;             double: d;    long double: e;
+  //  char [] : A_c;          char * : Pc; const char * : PKc;
+
+
+---
+
