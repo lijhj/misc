@@ -702,9 +702,8 @@ int main2() {
 
 int main() {
 
-
   {
-    // 1. std::string.find(),
+    // 1. string.find(),
     // search for substring in specified range in a larger string,
 
     std::string haystack = "abaCabaCabaCaba";
@@ -717,17 +716,16 @@ int main() {
     const size_t last = 11; // end(haystack) - begin(haystack); // 11;
 
     std::cout << __LINE__ << ": ";
-    for (size_t i = first; i != size(haystack);) {
-      i = haystack.find(needle, i);
-      if (i == std::string::npos || i + size(needle) > last) {
+    for (size_t i = first, j = last; i != j;) {
+      if (auto k = haystack.find(needle, i); k != std::string::npos && k != j) {
+        std::cout << k << ", ";
+        i = k + size(needle);
+      } else {
         break;
       }
-      std::cout << i << ", ";
-      i += size(needle);
     }
     std::cout << "\n";
   }
-
 
   {
     // 2. string, std::search(),
@@ -749,12 +747,11 @@ int main() {
         std::cout << k - begin(haystack) << ", ";
         i = end(needle) - begin(needle) + k;
       } else {
-        i++;
+        break;
       }
     }
     std::cout << "\n";
   }
-
 
   {
     // 3. sequence, std::search(),
@@ -779,7 +776,7 @@ int main() {
         std::cout << k - begin(haystack) << ", ";
         i = end(needle) - begin(needle) + k;
       } else {
-        i++;
+        break;
       }
     }
     std::cout << "\n";
