@@ -803,6 +803,21 @@ int main() {
 //---
 
 
+binary search, lower_bound, upper_bound, partition_point.
+input sequence needs to be already in order.
+
+lower_bound(begin(haystack), end(haystack), needle);
+partition_point(begin(haystack), end(haystack), [&needle](auto &x){x < needle}); // lower.
+
+upper_bound(begin(haystack), end(haystack), needle);
+partition_point(begin(haystack), end(haystack), [&needle](auto &x){x <= needle}); // upper.
+
+equal_range(begin(haystack), end(haystack), needle);
+
+
+//---
+
+
 // cppreference.com, html-book-20240610/reference/en/cpp/algorithm/search_n.html:
 
 template<class Container, class Size, class T>
