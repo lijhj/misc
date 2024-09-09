@@ -1,22 +1,24 @@
 <html>
 
 <head>
-    <style>
-        :root {
-            color-scheme: light dark
-        }
-    </style>
+  <style>
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme */
+    :root {
+      color-scheme:
+        light dark
+    }
+  </style>
 </head>
 
 <body>
-    <textarea disabled style="font-size: 1em; width: 100%; height: 100%; resize: none;">
+  <textarea disabled style="font-size: 1em; width: 100%; height: 100%; resize: none;">
 
 
 // c,c++ source code file:
-// the source file translation unit is composed of declarations,
-// 1. there can only be declarations in top level file scope:
+// the source file translation unit is composed of declarations.
+// 1. top level file scope can only have declarations:
 //      function declaration, variable declaration, type declaration, etc.
-// 2. statements can occur inside function.
+// 2. statements can only occur inside a function.
 
 source file:
 declarations:
@@ -101,21 +103,21 @@ arr[0] = 'H'; // ok
 
 https://c-faq.com/expr/intoverflow1.html, 3.14,
 
-    int a = INT_MAX;
-    int b = INT_MAX;
-    long int c = a * b; // error
-    long int c = (long int)(a * b); // error, conversion, it happens too late
+int a = INT_MAX;
+int b = INT_MAX;
+long int c = a * b; // error
+long int c = (long int)(a * b); // error, conversion, it happens too late
 
 Under C's integral promotion rules, the multiplication is carried out
 using int arithmetic, and the result may overflow or be truncated before
 being promoted and assigned to the long int left-hand side.
 Use an explicit cast on at least one of the operands to force long arithmetic:
 
-    int a = INT_MAX;
-    int b = INT_MAX; // or, long b = INT_MAX;
-    long int c = (long int)a * b; // ok, explicit type conversion on operand
-    long int d = ((long int)a) * b; // ok, explicit type conversion on operand
-    long int e = (1L * a) * b;
+int a = INT_MAX;
+int b = INT_MAX; // or, long b = INT_MAX;
+long int c = (long int)a * b; // ok, explicit type conversion on operand
+long int d = ((long int)a) * b; // ok, explicit type conversion on operand
+long int e = (1L * a) * b;
 
 
 ---
@@ -131,30 +133,30 @@ Overflow for signed arithmetic yields undefined behavior (7.1).
 
 // or, underflow and overflow is well defined in unsigned integers
 
-    auto x = UINT_MAX; // 4294967295
-    auto x2 = 5 - UINT_MAX; // 6
-    auto x3 = 5 - (long)UINT_MAX; // -4294967290
+auto x = UINT_MAX; // 4294967295
+auto x2 = 5 - UINT_MAX; // 6
+auto x3 = 5 - (long)UINT_MAX; // -4294967290
 
 // leetcode 58. Length of Last Word
 // https://leetcode.cn/problems/length-of-last-word/description ,
 
-    #include <iostream>
-    #include <vector>
-    #include <string>
-    using namespace std;
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
 
-    int lengthOfLastWord(string s) {
-        auto a = s.find_last_not_of(' ');
-        auto b = s.find_last_of(' ', a);
-        return a - b;
-    }
+int lengthOfLastWord(string s) {
+  auto a = s.find_last_not_of(' ');
+  auto b = s.find_last_of(' ', a);
+  return a - b;
+}
 
-    int main() {
-        std::cout << lengthOfLastWord("hello") << "\n"; // 5 - string::npos == 6 // ?
-        // std::cout << lengthOfLastWord("hello guys") << "\n";
-        // std::cout << lengthOfLastWord(" hello c++ ") << "\n";
-        return 0;
-    }
+int main() {
+  std::cout << lengthOfLastWord("hello") << "\n"; // 5 - string::npos == 6 // ?
+  // std::cout << lengthOfLastWord("hello guys") << "\n";
+  // std::cout << lengthOfLastWord(" hello c++ ") << "\n";
+  return 0;
+}
 
 
 ---
@@ -204,14 +206,12 @@ The usual approach is to test the operands against the limits in the
 header file <limits.h> before doing the operation. For example,
 here is a ``careful'' addition function:
 
-int
-chkadd(int a, int b)
-{
-    if(INT_MAX - b < a) {
-        fputs("int overflow\n", stderr);
-        return INT_MAX;
-    }
-    return a + b;
+int chkadd(int a, int b) {
+  if(INT_MAX - b < a) {
+    fputs("int overflow\n", stderr);
+    return INT_MAX;
+  }
+  return a + b;
 }
 
 Here is a complete set of three functions for ``careful''
@@ -222,42 +222,36 @@ various edge cases, such as the smallest negative integer, INT_MIN.)
 #include <stdio.h>
 #include <limits.h>
 
-int
-chkadd(int a, int b)
-{
-    if(b < 0)
-        return chksub(a, -b);
-    if(INT_MAX - b < a) {
-        fputs("int overflow\n", stderr);
-        return INT_MAX;
-    }
-    return a + b;
+int chkadd(int a, int b) {
+  if(b < 0)
+    return chksub(a, -b);
+  if(INT_MAX - b < a) {
+    fputs("int overflow\n", stderr);
+    return INT_MAX;
+  }
+  return a + b;
 }
 
-int
-chksub(int a, int b)
-{
-    if(b < 0)
-        return chkadd(a, -b);
-    if(INT_MIN + b > a) {
-        fputs("int underflow\n", stderr);
-        return INT_MIN;
-    }
-    return a - b;
+int chksub(int a, int b) {
+  if(b < 0)
+    return chkadd(a, -b);
+  if(INT_MIN + b > a) {
+    fputs("int underflow\n", stderr);
+    return INT_MIN;
+  }
+  return a - b;
 }
 
-int
-chkmul(int a, int b)
-{
-    int sign = 1;
-    if(a == 0 || b == 0) return 0;
-    if(a < 0) { a = -a; sign = -sign; }
-    if(b < 0) { b = -b; sign = -sign; }
-    if(INT_MAX / b < a) {
-        fputs("int overflow\n", stderr);
-        return (sign > 0) ? INT_MAX : INT_MIN;
-    }
-    return sign * a * b;
+int chkmul(int a, int b) {
+  int sign = 1;
+  if(a == 0 || b == 0) return 0;
+  if(a < 0) { a = -a; sign = -sign; }
+  if(b < 0) { b = -b; sign = -sign; }
+  if(INT_MAX / b < a) {
+    fputs("int overflow\n", stderr);
+    return (sign > 0) ? INT_MAX : INT_MIN;
+  }
+  return sign * a * b;
 }
 
 
@@ -298,22 +292,22 @@ A character, a short integer, ..is converted to int;
 #include <iostream>
 
 int main() {
-    char c1 = toupper(std::string_view("abc")[0]);    //ok
-    char c2 = toupper(std::string("abc").c_str()[0]); //ok
+  char c1 = toupper(std::string_view("abc")[0]);    //ok
+  char c2 = toupper(std::string("abc").c_str()[0]); //ok
 
-    // temporary of an temporary
-    const char *a = (std::string("abc")).c_str(); //error
+  // temporary of an temporary
+  const char *a = (std::string("abc")).c_str(); //error
 
-    // https://en.cppreference.com/w/cpp/language/lifetime ,
-    // lifetime of a temporary object may be extended by binding to
-    // a const lvalue reference
-    const std::string &b = std::string("abc");    //ok
-    const char *c3 = b.c_str();                   //ok
-    std::cout << c3 << "\n";
+  // https://en.cppreference.com/w/cpp/language/lifetime ,
+  // lifetime of a temporary object may be extended by binding to
+  // a const lvalue reference
+  const std::string &b = std::string("abc");    //ok
+  const char *c3 = b.c_str();                   //ok
+  std::cout << c3 << "\n";
 
-    //or, use an intermediate temporary variable
-    std::string tmp = std::string("abc");
-    const char *p = tmp.c_str();
+  //or, use an intermediate temporary variable
+  std::string tmp = std::string("abc");
+  const char *p = tmp.c_str();
 
 }
 
@@ -348,43 +342,39 @@ The value category of a compound literal is lvalue (its address can be taken)
 //C++: member functions and operators can be invoked on temporary objects.
 
 typedef struct T {
-    int num;
+  int num;
 } T;
 
-T f1()
-{
-    return (T){.num = 123,};
+T f1() {
+  return (T){.num = 123,};
 }
 
 //lvalue reference requires const if argument is temporary
-void f2_accept_temp(const T &t)
-{
+void f2_accept_temp(const T &t) {
 }
 
 //rvalue reference
-void f3(T &&t)
-{
+void f3(T &&t) {
 }
 
-int main()
-{
-    //c: return value is struct literal
-    //f1() = f1(); //error: expression is not assignable
-    //f1().num++; //error: expression is not assignable
-    //T *p = &f1(); //error: cannot take the address of an rvalue of type 'T' (aka 'struct T')
+int main() {
+  //c: return value is struct literal
+  //f1() = f1(); //error: expression is not assignable
+  //f1().num++; //error: expression is not assignable
+  //T *p = &f1(); //error: cannot take the address of an rvalue of type 'T' (aka 'struct T')
 
-    //c++: return value is class/struct object
-    f1() = f1(); //ok, invoke member operator= of the class
-    //f1().num++; //error: expression is not assignable
-    //T *p = &f1(); //error: taking the address of a temporary object of type 'T' [-Waddress-of-temporary]
+  //c++: return value is class/struct object
+  f1() = f1(); //ok, invoke member operator= of the class
+  //f1().num++; //error: expression is not assignable
+  //T *p = &f1(); //error: taking the address of a temporary object of type 'T' [-Waddress-of-temporary]
 
-    int n = f1().num;
-    T t = f1();
+  int n = f1().num;
+  T t = f1();
 
-    f2_accept_temp((T){});
-    f3((T){});
+  f2_accept_temp((T){});
+  f3((T){});
 
-    return 0;
+  return 0;
 }
 
 
@@ -408,13 +398,12 @@ struct T f(void) { return (struct T){3.15}; }
 double g1(double* x) { return *x; }
 void g2(double* x) { *x = 1.0; }
 
-int main(void)
-{
-    double d = g1(f().a); // C99: UB access to a[0] in g1 whose lifetime ended
-                          //      at the sequence point at the start of g1
-                          // C11: OK, d is 3.15
-    g2(f().a); // C99: UB modification of a[0] whose lifetime ended at the sequence point
-               // C11: UB attempt to modify a temporary object
+int main(void) {
+  double d = g1(f().a); // C99: UB access to a[0] in g1 whose lifetime ended
+                        //      at the sequence point at the start of g1
+                        // C11: OK, d is 3.15
+  g2(f().a); // C99: UB modification of a[0] whose lifetime ended at the sequence point
+             // C11: UB attempt to modify a temporary object
 }
 
 
@@ -425,12 +414,12 @@ int main(void)
 
 $ 7.12.1, C A reference manual, 5th
 - at the end of a full expression--that is,
-    an initializer, an expression statement, the expression in a return
-    statement, and the control expressions in a conditional, iterative,
-    or switch statement (including each expression in a for statement)
+  an initializer, an expression statement, the expression in a return
+  statement, and the control expressions in a conditional, iterative,
+  or switch statement (including each expression in a for statement)
 - after the first operand of a &&, ||, ?:, or comma operator
 - after the evaluation of the arguments and function expression in a
-    function call
+  function call
 
 
 ---
@@ -452,12 +441,11 @@ value to be stored.
 when it's reasonably easy to ensure that the final store of the final value
 (into i, in this case) doesn't interfere with the earlier accesses.
 
-
-    i = i++;    // error, increment its value on the right side, then assign it.
-    i++ * i++;  // error
-    i = i + 1;  // ok
-    i = i + 1;  // ok
-    i++ && i++; // ok
+  i = i++;    // error, increment its value on the right side, then assign it.
+  i++ * i++;  // error
+  i = i + 1;  // ok
+  i = i + 1;  // ok
+  i++ && i++; // ok
 
 
 ---
@@ -471,9 +459,8 @@ appearances of the object which fetch its value participate in the
 computation of the new value which is stored.
 This rule allows the expression
 
-    i = i++;    // error, increment its value on the right side, then assign it.
-
-    i = i + 1 ; // only fetch its value on the right side, then assign it.
+i = i + 1 ; // only fetch its value on the right side, then assign it.
+// i = i++; // error, increment its value on the right side, then assign it.
 
 because although the object i appears twice and is modified,
 the appearance (on the right-hand side) which fetches i's old value
@@ -486,31 +473,31 @@ is used to compute i's new value.
 // 1. function argument pass by value
 // will not change the argument passed by caller
 void f1(int x){
-    x++;
+  x++;
 }
 
 // 2. function argument pass by const reference
 // (1) will not change the actual argument passed by caller
 void f2(const int &x){
-    // (2) can not change formal parameter declared as const too
-    // x++; // error: assign to const
+  // (2) can not change formal parameter declared as const too
+  // x++; // error: assign to const
 
-    auto y = x; // make a copy
-    y++; // ok
+  auto y = x; // make a copy
+  y++; // ok
 }
 
 // 3. function argument pass by reference
 // will change the actual argument passed by caller
 void f3(int &x){
-    x++;
+  x++;
 }
 
 int main(){
-    int num = 10;
-    f1(num); // num is not changed
-    f2(num); // num is not changed
-    f3(num); // num is changed
-    return 0;
+  int num = 10;
+  f1(num); // num is not changed
+  f2(num); // num is not changed
+  f3(num); // num is changed
+  return 0;
 }
 
 
@@ -519,52 +506,44 @@ int main(){
 
 https://en.cppreference.com/w/cpp/language/rule_of_three ,
 
-// rule of three / five /zero
+// rule of three / five / zero
 
-class rule_of_five
-{
-    char* cstring; // raw pointer used as a handle to a
-                   // dynamically-allocated memory block
+class rule_of_five {
+  char* cstring; // raw pointer used as a handle to a
+                 // dynamically-allocated memory block
 public:
-    explicit rule_of_five(const char* s = "") : cstring(nullptr)
-    {
-        if (s)
-        {
-            std::size_t n = std::strlen(s) + 1;
-            cstring = new char[n];      // allocate
-            std::memcpy(cstring, s, n); // populate
-        }
+  explicit rule_of_five(const char* s = "") : cstring(nullptr) {
+    if (s) {
+      std::size_t n = std::strlen(s) + 1;
+      cstring = new char[n];      // allocate
+      std::memcpy(cstring, s, n); // populate
     }
+  }
 
-    ~rule_of_five()
-    {
-        delete[] cstring; // deallocate
-    }
+  ~rule_of_five() {
+    delete[] cstring; // deallocate
+  }
 
-    rule_of_five(const rule_of_five& other) // copy constructor
-        : rule_of_five(other.cstring) {}
+  rule_of_five(const rule_of_five& other) // copy constructor
+    : rule_of_five(other.cstring) {}
 
-    rule_of_five(rule_of_five&& other) noexcept // move constructor
-        : cstring(std::exchange(other.cstring, nullptr)) {}
+  rule_of_five(rule_of_five&& other) noexcept // move constructor
+    : cstring(std::exchange(other.cstring, nullptr)) {}
 
-    rule_of_five& operator=(const rule_of_five& other) // copy assignment
-    {
-        return *this = rule_of_five(other);
-    }
+  rule_of_five& operator=(const rule_of_five& other) { // copy assignment
+    return *this = rule_of_five(other);
+  }
 
-    rule_of_five& operator=(rule_of_five&& other) noexcept // move assignment
-    {
-        std::swap(cstring, other.cstring);
-        return *this;
-    }
+  rule_of_five& operator=(rule_of_five&& other) noexcept { // move assignment
+    std::swap(cstring, other.cstring);
+    return *this;
+  }
 
 // alternatively, replace both assignment operators with
-//  rule_of_five& operator=(rule_of_five other) noexcept
-//  {
+//  rule_of_five& operator=(rule_of_five other) noexcept {
 //      std::swap(cstring, other.cstring);
 //      return *this;
 //  }
-
 };
 
 
@@ -574,32 +553,31 @@ notes:
 
 1. delegating constructor:
 
-    rule_of_five(rule_of_five&& other) noexcept // move constructor
-        : cstring(std::exchange(other.cstring, nullptr)) {}
+  rule_of_five(rule_of_five&& other) noexcept // move constructor
+      : cstring(std::exchange(other.cstring, nullptr)) {}
 
 2. inside the copy assignment,
    the move assignment is called on the temporary object:
 
-    rule_of_five& operator=(const rule_of_five& other) // copy assignment
-    {
-        return *this = rule_of_five(other);
-    }
+  rule_of_five& operator=(const rule_of_five& other) { // copy assignment
+    return *this = rule_of_five(other);
+  }
 
 3. copy and swap:
-   pass arguments by value to function,
-   for the single value parameter, copy or move constructor is called.
-   it will call copy or move constructor instead of assignment operator.
-   assignment operator is for assigning a value to an existing variable.
-   constructor is for creating a new parameter object.
+  pass arguments by value to function,
+  for the single value parameter, copy or move constructor is called.
+  it will call copy or move constructor instead of assignment operator.
+  assignment operator is for assigning a value to an existing variable.
+  constructor is for creating a new parameter object.
 
-   c++ primer 5th, 13.3: copy and swap.
-   c++ primer 5th, 13.1.1: parameters that have a nonreference type are copy initialized.
+  c++ primer 5th, 13.3: copy and swap.
+  c++ primer 5th, 13.1.1: parameters that have a nonreference type are copy initialized.
 
-   rule_of_five& operator=(rule_of_five other);
+  rule_of_five& operator=(rule_of_five other);
 
-   rule_of_five t1, t2;
-   t2 = t1;
-   t2 = std::move(t1);
+  rule_of_five t1, t2;
+  t2 = t1;
+  t2 = std::move(t1);
 
 */
 
@@ -616,29 +594,29 @@ notes:
 #include <utility>
 
 void f(std::string &&s){
-    std::string t = std::move(s); // move
+  std::string t = std::move(s); // move
 }
 
 void f(std::string &s){ // ok too
-    std::string t = std::move(s); // move
+  std::string t = std::move(s); // move
 }
 
 int main() {
-    std::vector<std::string> v1 = {"hello", "world", "abc"};
-    auto elem = std::move(v1[0]); // 1. move
-    f(std::move(v1[1])); // 2. move
-    f(v1[2]); // 3. move
+  std::vector<std::string> v1 = {"hello", "world", "abc"};
+  auto elem = std::move(v1[0]); // 1. move
+  f(std::move(v1[1])); // 2. move
+  f(v1[2]); // 3. move
 
-    // ---
+  // ---
 
-    std::vector<std::string> v2 = {"hello", "world", "abc"};
-    std::vector<std::string> v3;
-    for (auto &&e : v2) {
-    // for (auto &e : v2) { // ok too
-        v3.emplace_back(std::move(e)); // 4. move
-    }
+  std::vector<std::string> v2 = {"hello", "world", "abc"};
+  std::vector<std::string> v3;
+  for (auto &&e : v2) {
+  // for (auto &e : v2) { // ok too
+    v3.emplace_back(std::move(e)); // 4. move
+  }
 
-    return 0;
+  return 0;
 }
 
 
@@ -834,29 +812,27 @@ equal_range(begin(haystack), end(haystack), needle);
 // cppreference.com, html-book-20240610/reference/en/cpp/algorithm/search_n.html:
 
 template<class Container, class Size, class T>
-constexpr bool consecutive_values(const Container& c, Size count, const T& v)
-{
-    return std::search_n(std::begin(c), std::end(c), count, v) != std::end(c);
+constexpr bool consecutive_values(const Container& c, Size count, const T& v) {
+  return std::search_n(std::begin(c), std::end(c), count, v) != std::end(c);
 }
 
-int main()
-{
-    constexpr char sequence[] = ".0_0.000.0_0.";
+int main() {
+  constexpr char sequence[] = ".0_0.000.0_0.";
 
-    static_assert(consecutive_values(sequence, 3, '0'));
+  static_assert(consecutive_values(sequence, 3, '0'));
 
-    for (int n : {4, 3, 2})
-        std::cout << std::boolalpha
-                  << "Has " << n << " consecutive zeros: "
-                  << consecutive_values(sequence, n, '0') << '\n';
+  for (int n : {4, 3, 2})
+    std::cout << std::boolalpha
+              << "Has " << n << " consecutive zeros: "
+              << consecutive_values(sequence, n, '0') << '\n';
 
-    std::vector<std::complex<double>> nums{{4, 2}, {4, 2}, {1, 3}};
-    #ifdef __cpp_lib_algorithm_default_value_type
-        auto it = std::search_n(nums.cbegin(), nums.cend(), 2, {4, 2});
-    #else
-        auto it = std::search_n(nums.cbegin(), nums.cend(), 2, std::complex<double>{4, 2});
-    #endif
-    assert(it == nums.begin());
+  std::vector<std::complex<double>> nums{{4, 2}, {4, 2}, {1, 3}};
+  #ifdef __cpp_lib_algorithm_default_value_type
+    auto it = std::search_n(nums.cbegin(), nums.cend(), 2, {4, 2});
+  #else
+    auto it = std::search_n(nums.cbegin(), nums.cend(), 2, std::complex<double>{4, 2});
+  #endif
+  assert(it == nums.begin());
 }
 
 1. because the consecutive_values is constexpr so static_assert can be
@@ -1063,7 +1039,7 @@ int main() {
 
 
 
-</textarea>
+    </textarea>
 </body>
 
 </html>
