@@ -121,6 +121,7 @@
   "window.commandCenter": false,
   "window.title": "${activeEditorLong}",
   "window.zoomPerWindow": false,
+  "workbench.editor.editorActionsLocation": "hidden",
   "workbench.editor.empty.hint": "hidden",
   "workbench.editor.enablePreview": false,
   "workbench.editor.languageDetection": false,
@@ -128,7 +129,7 @@
   "workbench.editor.tabSizing": "fixed",
   "workbench.iconTheme": null,
   "workbench.layoutControl.type": "toggles",
-  "workbench.settings.editor": "json", //ui
+  "workbench.settings.editor": "json", // ui
   "workbench.settings.useSplitJSON": true,
   "workbench.startupEditor": "newUntitledFile",
   "workbench.tree.enableStickyScroll": false,
