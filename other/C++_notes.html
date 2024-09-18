@@ -73,7 +73,7 @@ int n = 123;
 // {}  for initialization:
 // array, structure, c++ initializer_list,
 int a1[10] = {0};
-int a2[] = “hello”; //a2 with nul,
+int a2[] = "hello"; //a2 with nul,
 struct point {int x,y} pt = {10, 20};
 vector<string> articles = {"a", "an", "the"};
 
@@ -1114,29 +1114,69 @@ int main() {
 
 #include <iostream>
 #include <ranges>
+#include <span>
 #include <vector>
 
 int main() {
-  // range: 3..5
-  auto first = 3, last = 5;
-  for (int i : std::ranges::views::iota(first, last)) {
-    std::cout << i << "\n";
+  {
+    // range: 3..5
+    auto first = 3, last = 6;
+    for (int i : std::ranges::views::iota(first, last)) {
+      std::cout << __LINE__ << ": " << i << "\n";
+    }
   }
 
-  // slice:
-  auto first = 3, last = 5;
-  auto subrange = std::ranges::subrange(begin(v) + first, begin(v) + last);
-  for (auto e : subrange) {
-    std::cout << e << "\n";
+  {
+    auto first = 3, last = 6;
+    std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    // auto slice1 = std::views::drop(v, first);
+    // auto slice2 = std::views::take(slice1, last - first);
+
+    // in c++ ranges library, the pipeline operator works by taking the result
+    // of the expression on the left-hand side and passing it as the first
+    // argument to the function on the right-hand side.
+
+    auto slice = v | std::views::drop(first) | std::views::take(last - first);
+
+    // auto slice = v | std::views::slice(first, last); // c++26 ?
+
+    for (auto i : slice) {
+      std::cout << __LINE__ << ": " << i << "\n";
+    }
   }
 
-  // slice with copy:
-  // auto first = 3, last = 5;
-  // std::vector v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-  // for (auto e : std::vector(begin(v) + first, begin(v) + last)) {
-  //   std::cout << e << "\n";
-  // }
+  {
+    // slice:
+    auto first = 3, last = 6;
+    std::vector v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    // std::ranges::subrange<std::vector<int>::iterator> subrange(begin(v) +
+    // first, begin(v) + last);
+    auto subrange = std::ranges::subrange(begin(v) + first, begin(v) + last);
+    for (auto e : subrange) {
+      std::cout << __LINE__ << ": " << e << "\n";
+    }
+  }
 
+  {
+    // slice:
+    auto first = 3, last = 6;
+    std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    // std::span<int> span(v.begin() + first, v.begin() + last);
+    auto span = std::span(v.begin() + first, v.begin() + last);
+    for (auto e : span) {
+      std::cout << __LINE__ << ": " << e << "\n";
+    }
+  }
+
+  {
+    // slice with copy:
+    auto first = 3, last = 6;
+    std::vector v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    for (auto e : std::vector(begin(v) + first, begin(v) + last)) {
+      std::cout << __LINE__ << ": " << e << "\n";
+    }
+  }
   return 0;
 }
 
