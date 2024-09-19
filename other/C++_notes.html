@@ -1116,27 +1116,40 @@ int main() {
 #include <ranges>
 #include <vector>
 
-// in c++ ranges library, the pipeline operator works by taking the result
-// of the expression on the left-hand side and passing it as the first
-// argument to the function on the right-hand side.
+// in c++ ranges library, the pipeline operator works by taking the
+// result of the expression on the left-hand side and passing it as the
+// first argument to the function on the right-hand side.
 
-inline constexpr auto slice = [](std::size_t M, std::size_t N) {
-  return std::views::drop(M) | std::views::take(N - M);
+// half open range(begin, end)
+inline constexpr auto range(size_t begin, size_t end) {
+  return std::views::iota(begin, end);
+};
+
+// work with pipeline operator
+inline constexpr auto slice(size_t begin, size_t end) {
+  return std::views::drop(begin) | std::views::take(end - begin);
+};
+
+// work with function call
+template <std::ranges::range Range>
+inline constexpr auto slice(Range &&range, size_t begin, size_t end) {
+  return std::views::drop(range, begin) | std::views::take(end - begin);
 };
 
 int main() {
-  // half open range [begin..end)
-  constexpr auto begin = 3, end = 6;
-  auto range = std::ranges::views::iota(begin, end);
-  for (const auto i : range) {
+  for (auto i : range(3, 6)) {
     std::cout << i << " ";
   }
   std::cout << "\n";
 
-  // v | slice(begin, end)
   std::vector<int> v = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-  auto mySlice = v | slice(begin, end);
-  for (const auto &e : mySlice) {
+
+  for (const auto &e : v | slice(3, 6)) {
+    std::cout << e << " ";
+  }
+  std::cout << "\n";
+
+  for (const auto &e : slice(v, 3, 6)) {
     std::cout << e << " ";
   }
   std::cout << "\n";
