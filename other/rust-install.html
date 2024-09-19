@@ -49,9 +49,12 @@ $ rm ~/.cargo/.package-cache
 $ sudo apt install build-essential
 $ sudo apt install curl
 
+$ source ~/.profile
 $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 $ source "$HOME/.cargo/env"
+$ rustc --version
+
 $ rustup update stable
 $ cargo update  # in project directory with Cargo.toml
 
@@ -76,8 +79,8 @@ $ brew update
 ---
 
 
-// https://github.com/rust-lang/rustfmt
-// https://github.com/rust-lang/rustfmt/blob/master/Configurations.md
+// https://github.com/rust-lang/rustfmt ,
+// https://github.com/rust-lang/rustfmt/blob/master/Configurations.md ,
 
 $ cd ~  # $HOME, or workspace package root dir
 $ rustfmt  --print-config  default  rustfmt.toml
@@ -108,9 +111,9 @@ VSCode settings:
 
 Coding style:
 
-https://github.com/rust-dev-tools/fmt-rfcs/blob/master/guide/guide.md
-https://github.com/rust-dev-tools/fmt-rfcs
-https://rustc-dev-guide.rust-lang.org/conventions.html
+https://github.com/rust-dev-tools/fmt-rfcs/blob/master/guide/guide.md ,
+https://github.com/rust-dev-tools/fmt-rfcs ,
+https://rustc-dev-guide.rust-lang.org/conventions.html ,
 
 
 ---
@@ -131,7 +134,7 @@ members = [
 $ cargo new hello_app
 $ cargo new hello_lib --lib
 
-// https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#multiple-locations
+// https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#multiple-locations ,
 
 $ vi ~/work/hello_app/Cargo.toml
 [dependencies]
@@ -264,7 +267,7 @@ whether thats a library or binary crate.
 Defining Modules to Control Scope and Privacy ,
 https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html ,
 
-The pub mod garden; line tells the compiler to include the code it finds in src/garden.rs,
+The pub mod garden; line tells the compiler to include the code it finds in src/garden.rs ,
 
 
 ---
@@ -327,7 +330,7 @@ foo::hello(); // just use name directly
 4. module tree:
     should be defined in src/lib.rs.
 
-// https://doc.rust-lang.org/book/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html
+// https://doc.rust-lang.org/book/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html ,
 
 
 ---
@@ -373,7 +376,7 @@ unsafe {
 
 
 // turn off underline for variable in VSCode
-// https://code.visualstudio.com/docs/languages/rust#_semantic-syntax-highlighting
+// https://code.visualstudio.com/docs/languages/rust#_semantic-syntax-highlighting ,
 "editor.semanticHighlighting.enabled": false,
 
 
@@ -497,7 +500,7 @@ $
 
 
 fn main() {
-    // https://doc.rust-lang.org/stable/rust-by-example/scope/move/partial_move.html
+    // https://doc.rust-lang.org/stable/rust-by-example/scope/move/partial_move.html ,
     let p1 = People{name: "tom".to_string(), nickname: "tom".to_string(),};
     // let People{name, ref nickname} = p1;
     // let a = p1.name; //partial move for struct field
@@ -617,7 +620,7 @@ fn main() {
 
 fn main() {
 
-    // https://doc.rust-lang.org/book/ch08-02-strings.html :
+    // https://doc.rust-lang.org/book/ch08-02-strings.html ,
     // If we were to try to slice only part of a character bytes with something
     // like &hello[0..1], Rust would panic at runtime in the same way as if an
     // invalid index were accessed in a vector:
@@ -862,7 +865,7 @@ Instead of passing objects by value (T), objects can be passed by reference (&T)
 
 https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html ,
 
-move is a shallow copy, it invalidates the original moved object,
+move is a shallow copy, it invalidates the original moved object ,
 
 If you have heard the terms shallow copy and deep copy while working with other languages,
 the concept of copying the pointer, length, and capacity without copying the data probably
