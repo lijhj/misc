@@ -1119,7 +1119,8 @@ int main() {
 
 int main() {
   {
-    // range: 3..5
+    // range: [3..6)
+    // half open
     auto first = 3, last = 6;
     for (int i : std::ranges::views::iota(first, last)) {
       std::cout << __LINE__ << ": " << i << "\n";
@@ -1127,8 +1128,9 @@ int main() {
   }
 
   {
+    // slice:
     auto first = 3, last = 6;
-    std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> v = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     // auto slice1 = std::views::drop(v, first);
     // auto slice2 = std::views::take(slice1, last - first);
@@ -1149,7 +1151,7 @@ int main() {
   {
     // slice:
     auto first = 3, last = 6;
-    std::vector v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector v = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     // std::ranges::subrange<std::vector<int>::iterator> subrange(begin(v) +
     // first, begin(v) + last);
     auto subrange = std::ranges::subrange(begin(v) + first, begin(v) + last);
@@ -1161,7 +1163,7 @@ int main() {
   {
     // slice:
     auto first = 3, last = 6;
-    std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> v = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     // std::span<int> span(v.begin() + first, v.begin() + last);
     auto span = std::span(v.begin() + first, v.begin() + last);
     for (auto e : span) {
@@ -1172,7 +1174,7 @@ int main() {
   {
     // slice with copy:
     auto first = 3, last = 6;
-    std::vector v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector v = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     for (auto e : std::vector(begin(v) + first, begin(v) + last)) {
       std::cout << __LINE__ << ": " << e << "\n";
     }
@@ -1182,6 +1184,10 @@ int main() {
 
 
 ---
+
+
+
+
 
 
 
