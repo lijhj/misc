@@ -1120,36 +1120,39 @@ int main() {
 // result of the expression on the left-hand side and passing it as the
 // first argument to the function on the right-hand side.
 
-// half open range(begin, end)
-inline constexpr auto range(size_t begin, size_t end) {
-  return std::views::iota(begin, end);
+// half open range [begin, end)
+inline constexpr auto range(size_t begin, size_t end, size_t step = 1) {
+  return std::views::iota(begin, end) | std::views::stride(step);
 };
 
 // work with pipeline operator
-inline constexpr auto slice(size_t begin, size_t end) {
-  return std::views::drop(begin) | std::views::take(end - begin);
+inline constexpr auto slice(size_t begin, size_t end, size_t step = 1) {
+  return std::views::drop(begin) | std::views::take(end - begin) |
+         std::views::stride(step);
 };
 
 // work with function call
 template <std::ranges::range Range>
-inline constexpr auto slice(Range &&range, size_t begin, size_t end) {
-  return std::views::drop(range, begin) | std::views::take(end - begin);
+inline constexpr auto slice(Range &&range, size_t begin, size_t end,
+                            size_t step = 1) {
+  return std::views::drop(range, begin) | std::views::take(end - begin) |
+         std::views::stride(step);
 };
 
 int main() {
-  for (auto i : range(3, 6)) {
+  for (auto i : range(2, 9, 2)) {
     std::cout << i << " ";
   }
   std::cout << "\n";
 
   std::vector<int> v = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-  for (const auto &e : v | slice(3, 6)) {
+  for (const auto &e : v | slice(2, 9, 2)) {
     std::cout << e << " ";
   }
   std::cout << "\n";
 
-  for (const auto &e : slice(v, 3, 6)) {
+  for (const auto &e : slice(v, 2, 9, 2)) {
     std::cout << e << " ";
   }
   std::cout << "\n";
