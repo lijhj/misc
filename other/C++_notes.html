@@ -1129,22 +1129,19 @@ int main() {
 
   {
     // slice:
-    auto first = 3, last = 6;
-    std::vector<int> v = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    inline constexpr auto slice = [](std::size_t M, std::size_t N) {
+      return std::views::drop(M) | std::views::take(N - M);
+    };
 
-    // auto slice1 = std::views::drop(v, first);
-    // auto slice2 = std::views::take(slice1, last - first);
+    int main() {
+      auto first = 3, last = 6;
+      std::vector<int> v = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-    // in c++ ranges library, the pipeline operator works by taking the result
-    // of the expression on the left-hand side and passing it as the first
-    // argument to the function on the right-hand side.
-
-    auto slice = v | std::views::drop(first) | std::views::take(last - first);
-
-    // auto slice = v | std::views::slice(first, last); // c++26 ?
-
-    for (auto i : slice) {
-      std::cout << __LINE__ << ": " << i << "\n";
+      auto mySlice = v | slice(first, last);
+      for (const auto &e : mySlice) {
+        std::cout << __LINE__ << ": " << e << "\n";
+      }
+      return 0;
     }
   }
 
