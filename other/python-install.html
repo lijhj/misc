@@ -1,80 +1,75 @@
 <html>
 
 <head>
-  <style>
-    /* https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme */
-    :root {
-      color-scheme: light dark
-    }
-  </style>
+    <style>
+        /* https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme */
+        :root {
+            color-scheme: light dark
+        }
+    </style>
 </head>
 
 <body>
 
-  <textarea disabled style="
-    border: none;
-    font-family: monospace;
-    font-size: inherit;
-    height: 100%;
-    overflow-wrap: break-word;
-    resize: none;
-    width: 100%;">
+    <textarea disabled style="
+        border: none;
+        font-family: monospace;
+        font-size: inherit;
+        height: 100%;
+        overflow-wrap: break-word;
+        resize: none;
+        width: 100%;">
 
 
 python install
 
-# newer version (3.11) and pre-installed version (3.10) co-exist
-# just use the newer name python3.11 instead of python3
-# do not change the existing python3 symbol link
+
+# newer python3.11 can co-exist with older python3.10.
+# do not change the symbol link for python3.
+# use the name with exact version: python3.11.
 
 $ apt install python3.11
-
 $ apt install python3-pip
 
-# set mirror package index url temporarily
-$ python3 -m pip install -i \\n    https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
-$ python3 -m pip config set \\n    global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
-# or, permanently
+# mirror
 $ vi ~/.pip/pip.conf
 [global]
 index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 [install]
 trusted-host = https://pypi.tuna.tsinghua.edu.cn
 $
-
 $ python3 -m pip config list
-global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
-install.trusted-host='https://pypi.tuna.tsinghua.edu.cn'
-$
+$ pip3 config list
+$ pip config list
 
-# pip search command does not work.
-# search packages on official website.
-# https://pypi.org
-
-$ python3 -m pip install -i \\n    https://pypi.tuna.tsinghua.edu.cn/simple --upgrade "xxx"
-
-$ python3 -m pip uninstall "xxx"
-$ python3 -m pip list
 
 ---
 
-VSCode extension:
+
+# python package index: https://pypi.org ,
+
+# package python program into executable
+$ pip install pyinstaller
+$ pyinstaller --noconsole --onefile main.py  # on the main entry source file
+$ ls dist/  # executable generated in dist directory
+
+
+---
+
+
+# VSCode extensions
 ms-python.python,
-ms-python.vscode-pylance,
 
 debug:
 Open main.py /
-F5, or (Run and Debug), (create a launch.json) /
+F5, or Run and Debug /
+create a launch.json /
+Python Debugger /
 Python File (Debug the currently active Python file)
 
----
-
-GUI: tcl tk tkinter
-tkinter: https://docs.python.org/3/faq/gui.html
-PyGtk: https://wiki.python.org/moin/PyGtk
 
 ---
+
 
 # import module of the parent dir
 
@@ -89,7 +84,6 @@ $ find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 | |____main.py
 $
 
-
 1. sys.path
 
 $ vi main.py
@@ -97,7 +91,6 @@ import sys
 sys.path.append("../hello")
 import hello
 $
-
 $ cd /Users/ljh/Documents/hello_py/main
 
 $ python3.11 main.py
@@ -105,17 +98,13 @@ main
 hello
 $
 
-
 2. PYTHONPATH
 
 $ vi main.py
 import hello
 $
-
 $ cd /Users/ljh/Documents/hello_py/main
-
 $ PYTHONPATH=../hello python3.11 main.py
-
 
 3. python3.11 "-m"
 
@@ -132,41 +121,39 @@ main
 hello
 $
 
+
 ---
 
-# tkinter tcl tk
+
+GUI:
+tkinter: https://docs.python.org/3/faq/gui.html
+PyGtk: https://wiki.python.org/moin/PyGtk
 
 $ python3
 >>> import tkinter
 ModuleNotFoundError: No module named '_tkinter'
->>>
+>>> quit()
 $
-
 $ which python3
 /usr/local/bin/python3
-
+$
 $ /usr/local/bin/idle3
 ** IDLE can't import Tkinter.
 Your Python may not be configured for Tk. **
 $
-
 $ python3 -m tkinter -c"tkinter._test()"
 import _tkinter # If this fails your Python may not be configured for Tk
 ModuleNotFoundError: No module named '_tkinter'
 $
 
-# ubuntu linux
-$ sudo apt install python3-tk
-$
+$ apt install python3-tk
 
-# macOS with homebrew
+$ brew search python-tk # macOS homebrew
 $ brew install python-tk tcl-tk
 
-$ brew search "python*tk"
-==> Formulae
-python-tk@3.10      python-tk@3.9       python@3.7          python@3.9
-python-tk@3.11      python-yq           python@3.8
-$
+
+---
+
 
 # use threading to avoid UI freeze
 
@@ -178,8 +165,8 @@ import threading
 
 def on_button_clicked():
     label['text'] = str(random.random())
-    # time.sleep(2) # freeze
-    thread = threading.Thread(target=lambda: time.sleep(2)) # ok
+    # time.sleep(2) # heavy task, no
+    thread = threading.Thread(target=lambda: time.sleep(2)) # heavy task, ok
     thread.start()
 
 tk = tkinter.Tk()
@@ -200,7 +187,9 @@ tk.mainloop()
 
 $
 
+
 ---
+
 
 # window class inherit tkinter.Tk
 
@@ -244,7 +233,9 @@ window.mainloop()
 
 $
 
+
 ---
+
 
 # set default text
 # clear text when mouse click in
@@ -298,7 +289,7 @@ class Window(tkinter.Tk):
 
     def entry_validation(self, reason):
         print(reason, self.entry.get())
-        if reason == "focusin" and self.entry.get() == \\n                self.default_text:
+        if reason == "focusin" and self.entry.get() == self.default_text:
             self.entry.delete(0, tkinter.END)
         elif reason == "focusout" and self.entry.get().strip() == "":
             self.entry.delete(0, tkinter.END)
@@ -312,21 +303,6 @@ window.mainloop()
 ---
 
 
-$ package python program into executable
-# and run it without terminal window
-#
-$ dnf install python3-tkinter tk-devel
-$ dnf install python3-pip
-$ pip3 install pyinstaller
-$
-$ pyinstaller --noconsole --onefile main.py  # on the main entry source file
-$
-$ ls dist/  # the executable is generated under dist directory
-$
-
-
----
-
 The Python Tutorial:
 
 1:
@@ -334,19 +310,22 @@ The Python Tutorial:
 (Python) it has high-level data types built in,
 such as flexible arrays and dictionaries.
 
+
 ---
+
 
 3.1.1:
 
-> If a variable is not "defined" (assigned a value),
-> trying to use it will give you an error
+If a variable is not "defined" (assigned a value),
+trying to use it will give you an error.
 
-it means:
-- the first assignment defines the variable
-- can't use variable before define it
-- can assign value of different type to variable
+the first assignment defines a variable;
+can't use variable before define it;
+assigning value of different type redefines a variable;
+
 
 ---
+
 
 3.1.2:
 
@@ -355,29 +334,38 @@ assigning to an indexed position in the string results in an error.
     word = "python"
     # word[0] = "J"
 
-indexing is used to obtain individual characters,
-slicing allows you to obtain substring.
+indexing gets individual characters,
+slicing gets substring.
+
 
 ---
 
+
 4.8.1:
 
-the in keyword.
+the in keyword
+
 This tests whether or not a sequence contains a certain value.
 
     if ok in ('y', 'ye', 'yes'):
         return True
 
+the is keyword,
+
     if L is None:
         L = []
 
+
 ---
+
 
 4.8.1:
 
 The default argument value is evaluated only once.
 
+
 ---
+
 
 4.8.5: unpack argument list
 
@@ -389,9 +377,13 @@ def f(a, b, c):
 L = [1, 2, 3]
 f(*L) # unpack with * operator
 
+
 ---
 
+
 5.3:
+
+# tuple
 
 Tuples are immutable.
 It is not possible to assign to the individual items of a tuple.
@@ -404,13 +396,12 @@ tuple packing:
 sequence unpacking:
     x, y, z = t
 
-# tuple
-a tuple with one item is constructed by following a value with a comma
+Tuple with one item is constructed by following a value with a comma
 (it is not sufficient to enclose a single value in parentheses).
 Ugly, but effective.
 
 empty = ()
->>> singleton = 'hello',    # <-- note trailing comma
+>>> singleton = 'hello',  # note trailing comma
 >>> len(empty)
 0
 >>> len(singleton)
@@ -419,10 +410,13 @@ empty = ()
 ('hello',)
 
 # set
+
 to create an empty set you have to use set(), not {};
 the latter creates an empty dictionary.
 
+
 ---
+
 
 5.5:
 
@@ -434,19 +428,24 @@ True
 >>> 'jack' not in tel
 False
 
+
 ---
+
 
 5.7:
-The comparison operators in and not in are membership tests that
-determine whether a value is in (or not in) a container.
 
-The operators is and is not compare whether two objects are really the
-same object.
+The comparison operators in and not in are membership tests
+that determine whether a value is in (or not in) a container.
 
-the outcome of a comparison (or of any other Boolean expression) may be
-negated with not.
+The operators is and is not compare whether two objects
+are really the same object.
+
+the outcome of a comparison (or of any other Boolean expression)
+may be negated with not.
+
 
 ---
+
 
 5.8:
 
@@ -498,7 +497,9 @@ s.add(5)
 s.remove(5)
 INFO(f"{type(s)}, {len(s)}")
 
+
 ---
+
 
 7.2.1:
 
@@ -511,7 +512,9 @@ This is memory efficient, fast, and leads to simple code:
         for line in f:
             print(line, end='')
 
+
 ---
+
 
 #  write a line to a text file in Python
 with open('file.txt', 'a') as file:
@@ -520,6 +523,7 @@ with open('file.txt', 'a') as file:
 
 
 ---
+
 
 9.2.1:
 
@@ -619,7 +623,9 @@ x = X()
 print(X.f(x))
 print(x.f())
 
+
 ---
+
 
 python: `object`
 
@@ -636,7 +642,9 @@ all Python objects. type is a subclass of object and provides a way to create
 and work with other classes. Finally, user-defined classes are derived from
 either object or another class, and are organized under type.
 
+
 ---
+
 
 python: data type / data structure
 
@@ -653,7 +661,9 @@ container
 
 ```
 
+
 ---
+
 
 https://docs.python.org/3/glossary.html#term-sequence
 
@@ -663,7 +673,9 @@ built-in sequence types are list, str, tuple, and bytes.
 dict is considered a mapping rather than a sequence because the lookups
 use arbitrary immutable keys rather than integers.
 
+
 ---
+
 
 https://docs.python.org/3/library/stdtypes.html?highlight=sequence
 
@@ -675,25 +687,33 @@ Sequence - list, tuple, range, str, bytes, bytearray, memoryview,
 Mapping  - dict,
 Set      - set, frozenset,
 
+
 ---
+
 
 immutable objects include numbers, strings and tuples.
     (int, float, str, tuple, range)
 mutable objects can change their value but keep their id().
     (list, dict, set, class)
 
+
 ---
+
 
 pass statement
 Ellipsis: ...
 
+
 ---
+
 
 # check type of variable, expression, object
 print(type(b''))
 print(type(''))
 
+
 ---
+
 
 # import modules in subdir or parent dir out of the main entry file
 $
@@ -770,7 +790,7 @@ def logging2_init():
     size = 10 * 1024 * 1024  # 10M
     count = 10
     level = logging.DEBUG
-    fmt = "%(asctime)s %(levelname)s " \\n        " %(pathname)s:%(lineno)d:%(funcName)s: %(message)s"
+    fmt = "%(asctime)s %(levelname)s " " %(pathname)s:%(lineno)d:%(funcName)s: %(message)s"
     path = os.path.dirname(os.path.abspath(__file__))
     file = os.path.join(path, filename)
     file_handler = RotatingFileHandler(file,
@@ -800,7 +820,9 @@ def logging2_init():
 
 $
 
+
 ---
+
 
 from bisect import bisect_left, bisect_right
 
@@ -846,7 +868,9 @@ upper = bisect_right(L, item)
 for i in range(lower, upper):
     print("bisect index:", i, ", value:", L[i])
 
+
 ---
+
 
 $ pwd
 /Users/ljh/Documents/helloPy
@@ -883,7 +907,9 @@ Ran 2 tests in 0.000s
 OK
 $
 
+
 ---
+
 
 # add class object instance in list
 
@@ -913,7 +939,9 @@ def f(a, L=None):
     L.append(a)
     return L
 
+
 ---
+
 
 # python call c with ctypes ffi
 # foreign function interface
@@ -960,7 +988,9 @@ src = c_int(456) # or, src = 456
 res = int_cpy2(src)
 logging.info(f"res: {res}, type: {type(res)}")
 
+
 ---
+
 
 # python traps and pitfalls
 
@@ -1018,7 +1048,9 @@ for i in range(N):
     # err: 2, 2, 2
     print(L[i].num, end=', ')
 
+
 ---
+
 
 use inputline for vi mode in python interpreter on macOS
 
@@ -1046,6 +1078,7 @@ $ python3
 >>> ^D # Ctrl-D to quit interpreter
 $
 
+
 ---
 
 
@@ -1058,7 +1091,7 @@ https://doc.qt.io/qtforpython/quickstart.html
 $ python3 -m pip pyside6
 
 # or, with mirror
-$ python3 -m pip install -i \\n    https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pyside6
+$ python3 -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pyside6
 $
 
 # Ubuntu linux
@@ -1074,7 +1107,9 @@ pyside6-designer
 pyside6-uic
 $
 
+
 ---
+
 
 # QML call python function with pyside6
 
@@ -1157,6 +1192,7 @@ ApplicationWindow {
     }
 }
 $
+
 
 ---
 
@@ -1255,20 +1291,21 @@ In the sixth example, {height:^10.2f} formats height with a width of 10 characte
 including 2 decimal places after the decimal point, and centers it within that space.
 The resulting string has a length of 10 characters, including any necessary padding.
 
----
-
-
-
-
-
-
-
-
 
 ---
 
 
-  </textarea>
+
+
+
+
+
+
+
+---
+
+
+    </textarea>
 
 </body>
 
