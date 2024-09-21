@@ -449,9 +449,6 @@ may be negated with not.
 
 5.8:
 
-from logging2 import *
-logging2_init()
-
 # built-in types
 # str, list(mut), tuple (sequences, slicing, comparison ==, <)
 # dict(mut)
@@ -764,20 +761,26 @@ sys.path.append("..") # or, $ PYTHONPATH=".." python3 main.py
 import out.hello2 as hello2 # parent dir ../out
 import sub.hello3 as hello3 # sub dir
 
-logging2.init()
+logfile = "hello.log"
+logfile = os.path.join(os.path.dirname(os.path.abspath(__file__)), logfile)
+logging2(logfile)
 
 logging.info("")
+INFO("")
+
 hello.hello()
 hello2.hello2()
 hello3.hello3()
 $
 
 $ cat src/logging2.py
+
 # logging2.py
 import os
 import sys
 import logging
 from logging.handlers import RotatingFileHandler
+from datetime import datetime
 
 DEBUG    = logging.debug
 INFO     = logging.info
@@ -785,25 +788,28 @@ WARNING  = logging.warning
 ERROR    = logging.error
 CRITICAL = logging.critical
 
-def logging2_init():
-    filename = './hello.log'
-    size = 10 * 1024 * 1024  # 10M
-    count = 10
-    level = logging.DEBUG
-    fmt = "%(asctime)s %(levelname)s " " %(pathname)s:%(lineno)d:%(funcName)s: %(message)s"
-    path = os.path.dirname(os.path.abspath(__file__))
-    file = os.path.join(path, filename)
-    file_handler = RotatingFileHandler(file,
-                                        maxBytes=size,
-                                        backupCount=count)
-    console_handler = logging.StreamHandler(sys.stdout)
-    handlers = [file_handler, console_handler]
-    logging.basicConfig(handlers=handlers, level=level, format=fmt)
+class logging2:
+    def __init__(self, filename):
+        size = 10 * 1024 * 1024  # 10MB
+        count = 10
+        fmt = "%(asctime)s %(levelname)s %(filename)s:%(lineno)d: %(message)s"
+        datefmt = "%Y-%m-%d %H:%M:%S %Z"
+        formatter = logging.Formatter(fmt, datefmt=datefmt)
+        level = logging.DEBUG
+
+        file_handler = RotatingFileHandler(filename, maxBytes=size, backupCount=count)
+        file_handler.setFormatter(formatter)
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(formatter)
+        handlers = [file_handler, console_handler]
+        logging.basicConfig(handlers=handlers, level=level)
 
 """
     import logging
     from logging2 import *
-    logging2_init()
+    logfile = "hello.log"
+    logfile = os.path.join(os.path.dirname(os.path.abspath(__file__)), logfile)
+    logging2(logfile)
 
     logging.debug("")
     logging.info("")
@@ -817,6 +823,7 @@ def logging2_init():
     ERROR("")
     CRITICAL("")
 """
+
 
 $
 
@@ -947,9 +954,7 @@ def f(a, L=None):
 # foreign function interface
 
 import logging
-from logging2 import *
 from ctypes import *
-logging2_init()
 
 hello_lib = CDLL("./clib/hello.so")
 
@@ -1295,7 +1300,40 @@ The resulting string has a length of 10 characters, including any necessary padd
 ---
 
 
+# https://docs.python.org/3/reference/executionmodel.html ,
 
+# control statements does not introduce block scope,
+# including: if, for, while, etc.,
+
+a = 1
+if a == 1:
+    if a == 1:
+        b = 123
+    INFO(f"{b}") # ok
+INFO(f"{b}") # ok
+
+
+# https://docs.python.org/3/reference/executionmodel.html ,
+
+# scopes: function, class, module
+
+# num = 100
+def fun1():
+    # num = 200
+    def fun2():
+        # global num #
+        # nonlocal num #
+        num = 300
+        INFO(f"{num}")
+
+    fun2()
+    # INFO(f"{num}") #
+
+fun1()
+# INFO(f"{num}") #
+
+
+---
 
 
 
