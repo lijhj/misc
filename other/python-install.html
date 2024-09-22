@@ -24,9 +24,18 @@
 python install
 
 
-# newer python3.11 can co-exist with older python3.10.
-# do not change the symbol link for python3.
-# use the name with exact version: python3.11.
+# https://docs.python.org/3.12/tutorial/interpreter.html
+
+typing the command:
+$ python3.12  # use the exact version.
+to the shell.
+
+# keep the system python3 symbol link unchanged.
+# use the exact name for the exact version.
+
+
+---
+
 
 $ apt install python3.11
 $ apt install python3-pip
@@ -59,6 +68,8 @@ $ ls dist/  # executable generated in dist directory
 
 # VSCode extensions
 ms-python.python,
+ms-python.vscode-pylance,
+ms-python.debugpy,
 
 debug:
 Open main.py /
@@ -820,6 +831,32 @@ $
 ---
 
 
+# print with filename, line number,
+
+import os
+import sys
+
+def print2(*args, sep=" ", end="\n", file=None, flush=False):
+    frame = sys._getframe(1)
+    filename = os.path.basename(frame.f_code.co_filename)
+    lineno = frame.f_lineno
+    args = sep.join(map(str, args))
+    print(f"{filename}:{lineno}: {args}", end=end, file=file, flush=flush)
+
+print2("aaa", 10, 3.14, True, sep=",")
+print2("bbb", 20, 3.14, False)
+
+"""
+$ python3 src/main/main.py
+main.py:11: aaa,10,3.14,True
+main.py:12: bbb 20 3.14 False
+$
+"""
+
+
+---
+
+
 from bisect import bisect_left, bisect_right
 
 class X:
@@ -1323,6 +1360,68 @@ fun1()
 
 
 ---
+
+
+import asyncio
+import time
+
+# https://docs.python.org/3/library/asyncio-task.html
+
+async def say_after(delay, what):
+    while True:
+        await asyncio.sleep(delay)
+        print(what)
+
+async def main():
+    async with asyncio.TaskGroup() as tg:
+        # async tasks will not block each other
+        # even each task runs infinitely
+        task1 = tg.create_task(
+            say_after(1, 'hello'))
+
+        task2 = tg.create_task(
+            say_after(2, 'world!!!'))
+
+        print(f"started at {time.strftime('%X')}")
+
+    # The await is implicit when the context manager exits.
+
+    print(f"finished at {time.strftime('%X')}")
+
+try:
+    asyncio.run(main())
+except KeyboardInterrupt as err:
+    pass
+
+
+"""
+2024-09-22 18:26:36 CST DEBUG selector_events.py:64: Using selector: EpollSelector
+started at 18:26:36
+hello
+world!!!
+hello
+hello
+world!!!
+hello
+hello
+world!!!
+hello
+hello
+world!!!
+hello
+^C$
+"""
+
+
+---
+
+
+
+
+
+
+
+
 
 
 
