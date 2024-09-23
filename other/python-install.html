@@ -362,6 +362,20 @@ where the value is always an object reference, not the value of the object.
 ---
 
 
+4.8.1 Default Argument Values
+
+def f(a, L=None):
+    if L is None:
+        L = [] # make a new object
+    L.append(a)
+    return L
+
+The default argument value is evaluated only once.
+
+
+---
+
+
 4.8.1:
 
 the in keyword
@@ -380,9 +394,21 @@ the is keyword,
 ---
 
 
-4.8.1:
+4.8.4. Arbitrary Argument Lists
 
-The default argument value is evaluated only once.
+Normally, these variadic arguments will be last in the list of formal parameters,
+because they scoop up all remaining input arguments that are passed to the function:
+    def write_multiple_items(file, separator, *args):
+        file.write(separator.join(args))
+
+Any formal parameters which occur after the *args parameter are keyword-only arguments,
+meaning that they can only be used as keywords rather than positional arguments:
+    def concat(*args, sep="/"):
+        return sep.join(args)
+    concat("earth", "mars", "venus")
+    'earth/mars/venus'
+    concat("earth", "mars", "venus", sep=".")
+    'earth.mars.venus'
 
 
 ---
@@ -988,15 +1014,6 @@ for i in range(5):
 print(L)
 
 
-# 4.8.1 Default Argument Values
-
-def f(a, L=None):
-    if L is None:
-        L = [] # make a new object
-    L.append(a)
-    return L
-
-
 ---
 
 
@@ -1046,8 +1063,6 @@ logging.info(f"res: {res}, type: {type(res)}")
 
 ---
 
-
-# python traps and pitfalls
 
 # 01. The default values are evaluated at the point of function
 # definition in the defining scope.
