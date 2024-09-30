@@ -387,35 +387,15 @@ fn main() {
 ---
 
 
-/*
-filename pattern:
-
-foo.log
-foo.0.log
-foo.1.log
-foo.2.log
-
-log messages:
-
-2024-09-30T23:09:10.152026+08:00 ERROR hello/src/main.rs:87 - This is error message!
-2024-09-30T23:09:10.152077+08:00 WARN hello/src/main.rs:88 - This is warn message!
-2024-09-30T23:09:10.152127+08:00 INFO hello/src/main.rs:89 - This is info message!
-2024-09-30T23:09:10.152178+08:00 DEBUG hello/src/main.rs:90 - This is debug message!
-2024-09-30T23:09:10.152873+08:00 TRACE hello/src/main.rs:91 - This is trace message!
-
-*/
-
-
 // logrotation with log4rs:
 
-$ cd /path/to/mymodule  # package directory with cargo.toml
-$ cargo add log4rs log  # it will add dependencies and edit cargo.toml
+$ cat lib.rs
 
-$ cat main.rs
-
+//
 // https://github.com/estk/log4rs/blob/main/examples/log_to_file_with_rolling.rs ,
 
-use log::{debug, error, info, trace, warn, LevelFilter, SetLoggerError};
+pub use log::{debug, error, info, trace, warn};
+use log::{LevelFilter, SetLoggerError};
 use log4rs::{
     append::{
         console::{ConsoleAppender, Target},
@@ -428,7 +408,7 @@ use log4rs::{
     filter::threshold::ThresholdFilter,
 };
 
-fn init_logging(dir: &str, name: &str) -> Result<(), SetLoggerError> {
+pub fn init_logging(dir: &str, name: &str) -> Result<(), SetLoggerError> {
     const TRIGGER_FILE_SIZE: u64 = 1024u64 * 1024 * 1;
     const LOG_FILE_COUNT: u32 = 10;
     let file_path: &str = &format!("{dir}/{name}.log");
@@ -481,6 +461,14 @@ fn init_logging(dir: &str, name: &str) -> Result<(), SetLoggerError> {
     Ok(())
 }
 
+$
+
+
+$ cat main.rs
+
+use log2::init_logging;
+use log2::{debug, error, info, trace, warn};
+
 fn main() {
     let dir = "./logs";
     let name = "foo";
@@ -497,6 +485,32 @@ fn main() {
 }
 
 $
+
+
+$ cd /path/to/mymodule  # package directory with cargo.toml
+$ cargo add log4rs log  # it will add dependencies and edit cargo.toml
+
+// workspace/members: "log2"
+// package/dependencies: log2 = {path = "../log2"}
+
+/*
+
+filename pattern:
+
+foo.log
+foo.0.log
+foo.1.log
+foo.2.log
+
+log messages:
+
+2024-09-30T23:09:10.152026+08:00 ERROR hello/src/main.rs:87 - This is error message!
+2024-09-30T23:09:10.152077+08:00 WARN hello/src/main.rs:88 - This is warn message!
+2024-09-30T23:09:10.152127+08:00 INFO hello/src/main.rs:89 - This is info message!
+2024-09-30T23:09:10.152178+08:00 DEBUG hello/src/main.rs:90 - This is debug message!
+2024-09-30T23:09:10.152873+08:00 TRACE hello/src/main.rs:91 - This is trace message!
+
+*/
 
 
 ---
