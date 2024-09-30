@@ -50,7 +50,7 @@ $ sudo apt install build-essential
 $ sudo apt install curl
 
 $ source ~/.profile
-$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
 
 $ source "$HOME/.cargo/env"
 $ rustc --version
@@ -74,6 +74,15 @@ $ rustup self uninstall
 $ brew install rustup-init
 $ rustup-init
 $ brew update
+
+
+---
+
+
+https://doc.rust-lang.org/book/ ,
+https://doc.rust-lang.org/std/ ,
+https://crates.io ,
+https://docs.rs ,
 
 
 ---
@@ -136,11 +145,19 @@ $ cargo new hello_lib --lib
 
 // https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#multiple-locations ,
 
+# add dependencies by editing cargo.toml
 $ vi ~/work/hello_app/Cargo.toml
 [dependencies]
 hello_lib = { path = "../hello_lib", version = "0.1.0" }
-
 $
+
+# or use cargo add command
+$ cargo add log  # from crates.io
+$ cat ~/work/hello_app/Cargo.toml
+[dependencies]
+log = "0.4.22"
+$
+
 
 $ vi ~/work/hello_app/src/main.rs
 use rand::Rng;
@@ -224,16 +241,28 @@ $ cargo test
 Managing Growing Projects with Packages, Crates, and Modules ,
 https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html ,
 
-package: 包用来构建编译, 测试, 共享箱子;
-         一个包至少包含一个可执行箱子,
-         一个包最多包含一个库箱子;
 
-crate: 箱子是编译生成的的库, 二进制可执行的目标;
-         箱子由模块树编译生成;
+module:
 
-module: 模块是组织, 共享, 引用代码的结构, 方式.
-        一个模块对应一个文件,
-        模块可以嵌套子模块 submodule;
+- module tree is formed in crate root file: src/main.rs, src/lib.rs;
+- there can be nested submodule in subdir:
+- for module `foo` in crate root src/main.rs, src/lib.rs: src/foo.rs;
+- for moudle `bar` in non root src/foo.rs: src/foo/bar.rs;
+
+use foo; // use external crate `foo`, workspace/members, package/name;
+mod bar; // use internal source files `bar.rs` inside same crate;
+
+
+crate:
+
+- binary crates (src/main.rs);
+- library crates (src/lib.rs), which can be used by other crates;
+
+
+package:
+
+- a package is a crate with Cargo.toml;
+- Cargo.toml describes package name, package version, rust version, dependencies;
 
 
 ---
@@ -353,6 +382,121 @@ fn main() {
 
 // output:
 // src/main.rs:11: abc, 123
+
+
+---
+
+
+/*
+filename pattern:
+
+foo.log
+foo.0.log
+foo.1.log
+foo.2.log
+
+log messages:
+
+2024-09-30T23:09:10.152026+08:00 ERROR hello/src/main.rs:87 - This is error message!
+2024-09-30T23:09:10.152077+08:00 WARN hello/src/main.rs:88 - This is warn message!
+2024-09-30T23:09:10.152127+08:00 INFO hello/src/main.rs:89 - This is info message!
+2024-09-30T23:09:10.152178+08:00 DEBUG hello/src/main.rs:90 - This is debug message!
+2024-09-30T23:09:10.152873+08:00 TRACE hello/src/main.rs:91 - This is trace message!
+
+*/
+
+
+// logrotation with log4rs:
+
+$ cd /path/to/mymodule  # package directory with cargo.toml
+$ cargo add log4rs log  # it will add dependencies and edit cargo.toml
+
+$ cat main.rs
+
+// https://github.com/estk/log4rs/blob/main/examples/log_to_file_with_rolling.rs ,
+
+use log::{debug, error, info, trace, warn, LevelFilter, SetLoggerError};
+use log4rs::{
+    append::{
+        console::{ConsoleAppender, Target},
+        rolling_file::policy::compound::{
+            roll::fixed_window::FixedWindowRoller, trigger::size::SizeTrigger, CompoundPolicy,
+        },
+    },
+    config::{Appender, Config, Root},
+    encode::pattern::PatternEncoder,
+    filter::threshold::ThresholdFilter,
+};
+
+fn init_logging(dir: &str, name: &str) -> Result<(), SetLoggerError> {
+    const TRIGGER_FILE_SIZE: u64 = 1024u64 * 1024 * 1;
+    const LOG_FILE_COUNT: u32 = 10;
+    let file_path: &str = &format!("{dir}/{name}.log");
+
+    // https://docs.rs/log4rs/*/log4rs/append/rolling_file/policy/compound/roll/fixed_window/struct.FixedWindowRollerBuilder.html#method.build ,
+    let archive_pattern: &str = &format!("{dir}/{name}.{{}}.log");
+
+    // https://docs.rs/log4rs/latest/log4rs/encode/pattern/index.html ,
+    let pattern = "{d} {l} {file}:{line} - {m}\n";
+
+    let trigger = SizeTrigger::new(TRIGGER_FILE_SIZE);
+    let roller = FixedWindowRoller::builder()
+        .build(archive_pattern, LOG_FILE_COUNT)
+        .unwrap();
+    let policy = CompoundPolicy::new(Box::new(trigger), Box::new(roller));
+
+    // Pattern: https://docs.rs/log4rs/*/log4rs/encode/pattern/index.html ,
+    // Logging to log file. (with rolling)
+    let logfile = log4rs::append::rolling_file::RollingFileAppender::builder()
+        .encoder(Box::new(PatternEncoder::new(pattern)))
+        .build(file_path, Box::new(policy))
+        .unwrap();
+
+    // Build a stderr logger.
+    let stderr = ConsoleAppender::builder()
+        .target(Target::Stderr)
+        .encoder(Box::new(PatternEncoder::new(pattern)))
+        .build();
+
+    let config = Config::builder()
+        .appender(
+            Appender::builder()
+                .filter(Box::new(ThresholdFilter::new(log::LevelFilter::Trace)))
+                .build("logfile", Box::new(logfile)),
+        )
+        .appender(
+            Appender::builder()
+                .filter(Box::new(ThresholdFilter::new(log::LevelFilter::Trace)))
+                .build("stderr", Box::new(stderr)),
+        )
+        .build(
+            Root::builder()
+                .appender("logfile")
+                .appender("stderr")
+                .build(LevelFilter::Trace),
+        )
+        .unwrap();
+
+    let _handle = log4rs::init_config(config)?;
+    Ok(())
+}
+
+fn main() {
+    let dir = "./logs";
+    let name = "foo";
+    init_logging(dir, name);
+
+    // Generate some log messages to trigger rolling
+    loop {
+        error!("This is error message!");
+        warn!("This is warn message!");
+        info!("This is info message!");
+        debug!("This is debug message!");
+        trace!("This is trace message!");
+    }
+}
+
+$
 
 
 ---
