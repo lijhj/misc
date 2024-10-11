@@ -92,12 +92,11 @@
   "lldb.evaluateForHovers": false,
   "outline.icons": false,
   "[python]": {
-    "editor.formatOnType": false
+    "editor.defaultFormatter": "ms-python.black-formatter"
   },
   "python.analysis.inlayHints.functionReturnTypes": false,
   "python.analysis.inlayHints.pytestParameters": false,
   "python.analysis.inlayHints.variableTypes": false,
-  "python.formatting.provider": "none",
   "rust-analyzer.completion.autoimport.enable": false,
   "rust-analyzer.completion.autoself.enable": false,
   "rust-analyzer.completion.callable.snippets": "none",
