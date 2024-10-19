@@ -64,6 +64,82 @@ clean : ; -rm -fr *.o *.d main
 ---
 
 
+// 1. integer overflow:
+
+https://c-faq.com/expr/intoverflow1.html, 3.14,
+
+int a = INT_MAX;
+int b = INT_MAX;
+
+long int c1 = (long int)a * b;   // ok, convert one operand first;
+long int c2 = a * b;             // error,
+long int c3 = (long int)(a * b); // error,
+
+
+// K&R C, 2.3:
+// an integer too big to fit into an int will also be taken as a long.
+// integer literal may not need explicit conversion.
+
+c = 463400 * 46340;                   // 46340 * 10 * 46340;
+c2 = (long)463400 * 46340;            // 46340 * 10 * 46340;
+std::cout << c << ", " << c2 << "\n"; // -880480, 21473956000;
+
+
+// 2. array address bound check, dangling pointer, etc.:
+
+https://github.com/google/sanitizers/wiki/AddressSanitizer ,
+
+Heap buffer overflow,
+Stack buffer overflow,
+Global buffer overflow,
+
+Use after free (dangling pointer dereference),
+Use after return,
+Use after scope,
+
+Memory leaks,
+
+
+---
+
+
+# CXXFLAGS += -fsanitize=address
+# LDFLAGS  += -fsanitize=address
+
+// StackOutOfBounds
+int main(int argc, char **argv) {
+  int stack_array[100];
+  stack_array[1] = 0;
+  return stack_array[argc + 100];  // BOOM
+}
+
+// UseAfterFree
+int main(int argc, char **argv) {
+  int *array = new int[100];
+  delete [] array;
+  return array[argc];  // BOOM
+}
+
+
+/*
+
+https://github.com/google/sanitizers?tab=readme-ov-file ,
+
+use one at a time. do not mix them together.
+
+AddressSanitizer (detects addressability issues) and LeakSanitizer (detects memory leaks),
+ThreadSanitizer (detects data races and deadlocks) for C++ and Go,
+MemorySanitizer (detects use of uninitialized memory),
+
+HWASAN, or Hardware-assisted AddressSanitizer, a newer variant of AddressSanitizer that consumes much less memory,
+UBSan, or UndefinedBehaviorSanitizer,
+
+*/
+
+
+---
+
+
 // c,c++ initialization
 
 // =  for initialization (and assignment):
