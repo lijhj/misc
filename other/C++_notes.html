@@ -64,6 +64,15 @@ clean : ; -rm -fr *.o *.d main
 ---
 
 
+// c++ primer 5th, 4.11.1:
+The integral promotions convert the small integral types to a larger integral type.
+The types bool, char, signed char, unsigned char, short, and unsigned short are
+promoted to int if all possible values of that type fit in an int.
+
+
+---
+
+
 // 1. integer overflow:
 
 https://c-faq.com/expr/intoverflow1.html, 3.14,
@@ -72,17 +81,17 @@ int a = INT_MAX;
 int b = INT_MAX;
 
 long int c1 = (long int)a * b;   // ok, convert one operand first;
-long int c2 = a * b;             // error,
-long int c3 = (long int)(a * b); // error,
+long int c2 = (long int)(a * b); // error;
+long int c3 = a * b;             // error;
 
 
 // K&R C, 2.3:
 // an integer too big to fit into an int will also be taken as a long.
 // integer literal may not need explicit conversion.
 
-c = 463400 * 46340;                   // 46340 * 10 * 46340;
-c2 = (long)463400 * 46340;            // 46340 * 10 * 46340;
-std::cout << c << ", " << c2 << "\n"; // -880480, 21473956000;
+auto c1 = INT_MAX + 1;             // long;
+auto c2 = (long)INT_MAX + INT_MAX; // c2 value is int without conversion;
+auto c3 = INT_MAX + INT_MAX;       // error;
 
 
 // 2. array address bound check, dangling pointer, etc.:
