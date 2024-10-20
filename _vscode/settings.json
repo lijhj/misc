@@ -31,7 +31,7 @@
     "-I/Users/ljh/Downloads/utfcpp-4.0.5/source",
   ],
   "clangd.semanticHighlighting": false,
-  "debug.console.fontFamily": "Arial", // "Helvetica", //
+  "debug.console.fontFamily": "Helvetica", // "Arial",
   "debug.internalConsoleOptions": "neverOpen",
   "debug.onTaskErrors": "showErrors",
   "debug.showBreakpointsInOverviewRuler": true,
@@ -45,8 +45,8 @@
   "editor.copyWithSyntaxHighlighting": false,
   "editor.dragAndDrop": false,
   "editor.folding": false,
-  "editor.fontFamily": "Arial", // "Helvetica",
-  "editor.fontSize": 15,
+  "editor.fontFamily": "Helvetica", // "Arial",
+  "editor.fontSize": 14,
   "editor.formatOnSave": true, // formatOnPaste conflicts with SortIncludes
   "editor.hover.enabled": false,
   "editor.inlayHints.enabled": "off",
