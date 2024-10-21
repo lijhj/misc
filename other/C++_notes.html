@@ -64,6 +64,29 @@ clean : ; -rm -fr *.o *.d main
 ---
 
 
+K&R C 2.7:
+
+- in assignment, value on right is converted to type of the value at left;
+- in function call, actual arguments are converted to formal parameter type of the function;
+- in other binary operators which take multiple operands of different types,
+  like *, /, %, +, -, the narrower operand is promoted to the type of
+  the wider operand without losing information.
+
+  When an operator has operands of different types, they are converted
+  to a common type according to a small number of rules. In general,
+  the only automatic conversions are those that convert a "narrower" operand
+  into a "wider" one without losing information.
+
+  Implicit arithmetic conversions work .much as expected.
+  In general, if an operator like + or * that takes two operands (a
+  binary operator) has operands of different types, the "lower" type is
+  promoted to the "higher" type before the operation proceeds.
+  The result is of the higher type.
+
+
+---
+
+
 // c++ primer 5th, 4.11.1:
 The integral promotions convert the small integral types to a larger integral type.
 The types bool, char, signed char, unsigned char, short, and unsigned short are
@@ -73,7 +96,24 @@ promoted to int if all possible values of that type fit in an int.
 ---
 
 
-// 1. integer overflow:
+// K&R C 2nd,
+// 1.2:
+// integer division (operation), floating-point operation,
+// integer division would truncate it to zero.
+
+// 2.7:
+// explicit type conversions can be forced ("coerced") in any expres- sion,
+// with a l!nary operator called a cast.
+
+double f1 = 10/3; // warning
+double f2 = 10.0/3; // ok
+double f3 = (double)10/3; // ok
+
+
+---
+
+
+// integer overflow:
 
 https://c-faq.com/expr/intoverflow1.html, 3.14,
 
@@ -94,7 +134,10 @@ auto c2 = (long)INT_MAX + INT_MAX; // c2 value is int without conversion;
 auto c3 = INT_MAX + INT_MAX;       // error;
 
 
-// 2. array address bound check, dangling pointer, etc.:
+---
+
+
+// array address bound check, dangling pointer, etc.:
 
 https://github.com/google/sanitizers/wiki/AddressSanitizer ,
 
