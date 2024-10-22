@@ -1773,6 +1773,76 @@ $ LD_LIBRARY_PATH=../boost_1_82_0/stage/lib  ./a.out
 ---
 
 
+// rule of zero
+struct S {
+  std::string name;
+  int num;
+  // S(const std::string name, int num) : name(name), num(num) {}
+};
+
+int main() {
+  std::vector<S> v;
+
+  // v.emplace_back("abc", 123);              // need constructor
+  // v.emplace_back(std::string("abc"), 123); // need constructor
+
+  v.push_back({"abc", 123});     // rule of zero
+  v.emplace_back(S{"abc", 123}); // rule of zero
+
+  return 0;
+}
+
+
+---
+
+
+// cppreference, Compound literals,
+// html-book-20240610/reference/en/c/language/compound_literal.html ,
+
+#include <stdio.h>
+
+int *p = (int[]){2, 4};
+const float *pc = (const float[]){1e0, 1e1, 1e2};
+
+struct point {
+  double x, y;
+};
+
+int main(void) {
+  int n = 2, *p = &n;
+  p = (int[2]){*p};
+
+  void drawline1(struct point from, struct point to);
+  void drawline2(struct point * from, struct point * to);
+  drawline1((struct point){.x = 1, .y = 1}, (struct point){.x = 3, .y = 4});
+
+  // it is legal in c, but error in c++.
+  // error: taking the address of a temporary object [-Waddress-of-temporary]
+  // [-Waddress-of-temporary] drawline2(&(struct point){.x = 1, .y = 1},
+  // &(struct point){.x = 3, .y = 4});
+
+  // create an variable for temporary use instead
+  point p1 = {.x = 1, .y = 1};
+  point p2 = {.x = 3, .y = 4};
+  drawline2(&p1, &p2);
+}
+
+void drawline1(struct point from, struct point to) {
+  printf("drawline1: `from` @ %p {%.2f, %.2f}, `to` @ %p {%.2f, %.2f}\n",
+         (void *)&from, from.x, from.y, (void *)&to, to.x, to.y);
+}
+
+void drawline2(struct point *from, struct point *to) {
+  printf("drawline2: `from` @ %p {%.2f, %.2f}, `to` @ %p {%.2f, %.2f}\n",
+         (void *)from, from->x, from->y, (void *)to, to->x, to->y);
+}
+
+
+---
+
+
+
+
 
 
 
