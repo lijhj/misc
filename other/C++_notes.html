@@ -225,6 +225,129 @@ UBSan, or UndefinedBehaviorSanitizer,
 ---
 
 
+CppCon 2014: "Sanitize your C++ code", Kostya Serebryany,
+CppCon 2015: "Beyond Sanitizers", by Kostya Serebr,
+https://www.usenix.org/sites/default/files/conference/protected-files/enigma_slides_serebryany.pdf ,
+
+1. Sanitizer:
+address,
+leak,
+uninitialized memory,
+undefined behavior,
+thread;
+
+flags: -fsanitize={address, leak, memory, undefined, thread} ;
+
+both compiling and linking should include the flag:
+    CXXFLAGS += -sanitize=address
+    LDFLAGS += -sanitize=address
+
+
+2. Coverage tests with llvm libfuzzer:
+flags: -fsanitizer=coverage ;
+
+
+3. Harden your code:
+3.1  Threat #1: Buffer-overflow/use-after-free
+overwrites a function pointer (or vptr)
+by an attacker-controlled value:
+
+Solution:  Control Flow Integrity (CFI)
+
+flags: -flto -fsanitize=cfi
+
+3.2. Threat #2: Stack-buffer-overflow
+overwrites return address by an attacker-
+controlled value:
+
+Solution: safestack
+
+flags: -sanitize=safe-stack ;
+
+
+---
+
+
+// rule of zero
+struct S {
+  std::string name;
+  int num;
+  // S(const std::string name, int num) : name(name), num(num) {}
+};
+
+int main() {
+  std::vector<S> v;
+
+  v.emplace_back("abc", 123); // newer gcc 14 -std=23 on fedora 40
+  v.emplace_back(S{"abc", 123});
+  v.push_back({"abc", 123});
+
+  return 0;
+}
+
+
+Aggregates in C++17 are defined as classes (including structs) that:
+Have no user-declared constructors.
+Have no private or protected non-static data members.
+Have no base classes.
+Have no virtual member functions.
+
+the presence of the std::string member disqualifies S from being
+an aggregate under C++17 rules.
+When you try to use emplace_back("abc", 123) in C++17,
+the compiler looks for a matching constructor in S that takes two parameters,
+but since you haven't explicitly defined such a constructor,
+it results in a compilation error.
+
+C++20 and Later
+
+In C++20, the rules for aggregate initialization were relaxed.
+a class contains members with default constructors (like std::string),
+it can still be considered an aggregate, provided that the other conditions
+(no private members, no user-declared constructors, etc.) are met.
+
+This means that in C++20, S can be aggregate-initialized directly
+using the two provided arguments ("abc" and 123) for its members name and num.
+The compiler can now generate the appropriate initialization without requiring
+an explicit constructor.
+So in C++20 and later, this code works:
+
+v.emplace_back("abc", 123);
+
+The compiler can treat this as aggregate initialization,
+directly constructing an S object by passing the arguments to
+the name (std::string) and num (int) members.
+
+
+---
+
+
+// c++ primer 5th, 3.2.1:
+When we initialize a variable using =,
+we are asking the compiler to copy initialize the object;
+when we omit the =, we use direct initialization;
+
+creating a (temporary) object to copy:
+
+  string s8 = string(10,'c'); // copy initialization; s8 is cccccccccc ;
+
+
+// c++ primer 5th, 7.5.5:
+We can initialize the data members of an aggregate class
+by providing a braced list of member initializers:
+
+  struct Data {
+    int ival;
+    string s;
+  };
+
+  // val1.ival=0;val1.s=string("Anna")
+  Data val1 = { 0, "Anna" };
+
+
+---
+
+
 // c,c++ initialization
 
 // =  for initialization (and assignment):
@@ -1768,29 +1891,6 @@ $ objdump -T /path/to/library.so | grep foo
 $ readelf -Ws /path/to/library.so | grep foo
 
 $ LD_LIBRARY_PATH=../boost_1_82_0/stage/lib  ./a.out
-
-
----
-
-
-// rule of zero
-struct S {
-  std::string name;
-  int num;
-  // S(const std::string name, int num) : name(name), num(num) {}
-};
-
-int main() {
-  std::vector<S> v;
-
-  // v.emplace_back("abc", 123);              // need constructor
-  // v.emplace_back(std::string("abc"), 123); // need constructor
-
-  v.push_back({"abc", 123});     // rule of zero
-  v.emplace_back(S{"abc", 123}); // rule of zero
-
-  return 0;
-}
 
 
 ---
