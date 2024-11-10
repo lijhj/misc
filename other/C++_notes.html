@@ -2078,6 +2078,35 @@ int main() {
 ---
 
 
+CPPFLAGS += -I/home/ljh/app/GSL/include/
+CPPFLAGS += -I/home/ljh/app/boost_1_86_0/
+LDFLAGS += -L/home/ljh/app/boost_1_86_0/stage/lib
+
+CXXFLAGS += -std=c++2a -Wall -Wextra -pedantic
+CXXFLAGS += -Wconversion -Wfloat-equal -Wformat -Woverflow -Wsign-conversion -Wuninitialized -Wwrite-strings
+
+# use one sanitizer at a time.
+
+# address/leak sanitizer, https://github.com/google/sanitizers/wiki/AddressSanitizer,
+#CXXFLAGS += -fsanitize=address
+#LDFLAGS += -fsanitize=address
+
+# memory sanitizer, https://github.com/google/sanitizers/wiki/MemorySanitizer,
+#CXXFLAGS += -fsanitize=memory -fPIE -pie
+#LDFLAGS += -fsanitize=memory -fPIE -pie
+
+# undefined behavior sanitizer, https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html,
+#CXXFLAGS += -fsanitize=undefined
+#LDFLAGS += -fsanitize=undefined
+
+# thread sanitizer, https://clang.llvm.org/docs/ThreadSanitizer.html,
+#CXXFLAGS += -fsanitize=thread
+#LDFLAGS += -fsanitize=thread
+
+
+---
+
+
 
 
 
