@@ -2099,6 +2099,8 @@ CXXFLAGS += -std=c++2a -Wall -Wextra -Wpedantic
 CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -Woverflow -Wsign-conversion -Wwrite-strings
 
 # use one sanitizer at a time.
+# How to use simultaneously Asan and Msan?  #1039
+# https://github.com/google/sanitizers/issues/1039#issuecomment-453607726
 
 # address/leak sanitizer, https://github.com/google/sanitizers/wiki/AddressSanitizer,
 #CXXFLAGS += -fsanitize=address
