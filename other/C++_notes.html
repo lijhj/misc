@@ -2126,13 +2126,16 @@ CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -
 CXXFLAGS += -fsanitize=address -fsanitize=undefined
 LDFLAGS += -fsanitize=address -fsanitize=undefined
 
-# memory sanitizer,
-#CXXFLAGS += -fsanitize=memory -fPIE -pie
-#LDFLAGS += -fsanitize=memory -fPIE -pie
-
 # thread sanitizer,
 #CXXFLAGS += -fsanitize=thread
 #LDFLAGS += -fsanitize=thread
+
+# https://github.com/google/sanitizers/issues/1039#issuecomment-453306241 ,
+#   "GCC doesn't have msan at all."  --kcc, Jan 11, 2019
+
+# memory sanitizer, (gcc has no msan. use clang if needed)
+#CXXFLAGS += -fsanitize=memory -fPIE -pie
+#LDFLAGS += -fsanitize=memory -fPIE -pie
 
 
 ---
