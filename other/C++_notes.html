@@ -188,8 +188,8 @@ i + (i = 1); // error?
 ---
 
 
-# CXXFLAGS += -fsanitize=address
-# LDFLAGS  += -fsanitize=address
+# CXXFLAGS += -fsanitize=address -fsanitize=undefined
+# LDFLAGS  += -fsanitize=address -fsanitize=undefined
 
 // StackOutOfBounds
 int main(int argc, char **argv) {
@@ -208,10 +208,8 @@ int main(int argc, char **argv) {
 
 /*
 
-https://github.com/google/sanitizers?tab=readme-ov-file ,
-https://github.com/google/sanitizers/issues/1039#issuecomment-453607726 ,
 
-use one sanitizer at a time. do not mix them together.
+https://github.com/google/sanitizers?tab=readme-ov-file ,
 
 AddressSanitizer (detects addressability issues) and LeakSanitizer (detects memory leaks),
 ThreadSanitizer (detects data races and deadlocks) for C++ and Go,
@@ -2088,13 +2086,11 @@ int main() {
 }
 
 /*
-# address sanitizer
-CXXFLAGS += -fsanitize=address
-LDFLAGS += -fsanitize=address
 
-# undefined behavior sanitizer
-CXXFLAGS += -fsanitize=undefined
-LDFLAGS += -fsanitize=undefined
+# address (including leak), undefined behavior sanitizer
+
+CXXFLAGS += -fsanitize=address -fsanitize=undefined
+LDFLAGS += -fsanitize=address -fsanitize=undefined
 
 */
 
@@ -2115,10 +2111,7 @@ main: $(patsubst %.cpp,%.o,$(wildcard *.cpp)) # .cpp
 clean: ; $(RM) *.o *.d main
 .PHONY: clean
 
-
----
-
-
+# additional flags
 CPPFLAGS += -I/home/ljh/app/GSL/include/
 CPPFLAGS += -I/home/ljh/app/boost_1_86_0/
 LDFLAGS += -L/home/ljh/app/boost_1_86_0/stage/lib
@@ -2126,25 +2119,55 @@ LDFLAGS += -L/home/ljh/app/boost_1_86_0/stage/lib
 CXXFLAGS += -std=c++2a -Wall -Wextra -Wpedantic
 CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -Woverflow -Wsign-conversion -Wuninitialized -Wwrite-strings
 
-# use one sanitizer at a time. do not mix them together.
-# How to use simultaneously Asan and Msan?  #1039
-# https://github.com/google/sanitizers/issues/1039#issuecomment-453607726,
+# https://github.com/google/sanitizers/issues/1039#issuecomment-453607726 ,
+#   "asan+lsan+ubsan is fine, the rest should run separately."  --kcc.
 
-# address/leak sanitizer, https://github.com/google/sanitizers/wiki/AddressSanitizer,
-#CXXFLAGS += -fsanitize=address
-#LDFLAGS += -fsanitize=address
+# address (including leak), undefined behavior sanitizers,
+CXXFLAGS += -fsanitize=address -fsanitize=undefined
+LDFLAGS += -fsanitize=address -fsanitize=undefined
 
-# undefined behavior sanitizer, https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html,
-#CXXFLAGS += -fsanitize=undefined
-#LDFLAGS += -fsanitize=undefined
-
-# memory sanitizer, https://github.com/google/sanitizers/wiki/MemorySanitizer,
+# memory sanitizer,
 #CXXFLAGS += -fsanitize=memory -fPIE -pie
 #LDFLAGS += -fsanitize=memory -fPIE -pie
 
-# thread sanitizer, https://clang.llvm.org/docs/ThreadSanitizer.html,
+# thread sanitizer,
 #CXXFLAGS += -fsanitize=thread
 #LDFLAGS += -fsanitize=thread
+
+
+---
+
+
+# https://www.jetbrains.com/help/clion/google-sanitizers.html ,
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=[sanitizer_name] -g")
+
+For [sanitizer_name] use one of the following:
+  address (leak),
+  undefined,
+  memory,
+  thread,
+
+
+---
+
+
+# How to use simultaneously Asan and Msan?
+# https://github.com/google/sanitizers/issues/1039#issuecomment-453607726 ,
+#   "asan+lsan+ubsan is fine, the rest should run separately."  --kcc.
+
+# address/leak sanitizer, https://github.com/google/sanitizers/wiki/AddressSanitizer,
+# undefined behavior sanitizer, https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html,
+
+
+# https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html ,
+3.12 Program Instrumentation Options,
+
+-fsanitize=address (cannot be combined with thread, hwaddress);
+  -fsanitize=leak (included in address, cannot be combined with thread);
+  -fsanitize=undefined;
+
+-fsanitize=thread (cannot be combined with address, leak);
 
 
 ---
