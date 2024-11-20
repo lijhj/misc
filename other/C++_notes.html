@@ -2120,7 +2120,7 @@ CXXFLAGS += -std=c++2a -Wall -Wextra -Wpedantic
 CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -Woverflow -Wsign-conversion -Wuninitialized -Wwrite-strings
 
 # https://github.com/google/sanitizers/issues/1039#issuecomment-453607726 ,
-#   "asan+lsan+ubsan is fine, the rest should run separately."  --kcc.
+#   "asan+lsan+ubsan is fine, the rest should run separately."  --kcc, Jan 12, 2019
 
 # address (including leak), undefined behavior sanitizers,
 CXXFLAGS += -fsanitize=address -fsanitize=undefined
@@ -2136,6 +2136,12 @@ LDFLAGS += -fsanitize=address -fsanitize=undefined
 # memory sanitizer, (gcc has no msan. use clang if needed)
 #CXXFLAGS += -fsanitize=memory -fPIE -pie
 #LDFLAGS += -fsanitize=memory -fPIE -pie
+
+# default C compiler: CC = gcc
+# default C++ compiler: CXX = g++
+# default linker: CC = gcc
+#CC = clang++  # clang, clang++,
+#CXX = clang++  # clang, clang++,
 
 
 ---
