@@ -2131,8 +2131,9 @@ CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -
 #   "asan+lsan+ubsan is fine, the rest should run separately."  --kcc, Jan 12, 2019
 
 # address (including leak), undefined behavior sanitizers,
-# CXXFLAGS += -fsanitize=address -fsanitize=undefined
-# LDFLAGS += -fsanitize=address -fsanitize=undefined
+# (clang++ can not report leaks on debian 12 testing, but g++ can.)
+# CXXFLAGS += -fsanitize=address -fsanitize=leak -fsanitize=undefined
+# LDFLAGS += -fsanitize=address -fsanitize=leak -fsanitize=undefined
 
 # thread sanitizer,
 # CXXFLAGS += -fsanitize=thread
