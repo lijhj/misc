@@ -2101,9 +2101,9 @@ LDFLAGS += -fsanitize=address -fsanitize=undefined
 # build dynamic library with -fPIC -shared
 CXXFLAGS = -g # -O3 -fPIC # CXXFLAGS for .cpp
 CPPFLAGS = -MMD -MP # -I../foo -DNDEBUG
-LDFLAGS = # -L../foo -shared
-LDLIBS = # -lfoo
-CC = $(CXX) # link with CXX for .cpp
+LDFLAGS  = # -L../foo -shared
+LDLIBS   = # -lfoo
+CC       = $(CXX) # link with CXX for .cpp
 
 # target name is basename of one of the source files
 main: $(patsubst %.cpp,%.o,$(wildcard *.cpp)) # .cpp
@@ -2111,10 +2111,18 @@ main: $(patsubst %.cpp,%.o,$(wildcard *.cpp)) # .cpp
 clean: ; $(RM) *.o *.d main
 .PHONY: clean
 
+# use clang for C program:
+#CC        = clang
+
+# use clang++ for C++ program: link to libc++ instead of libstdc++,
+#CXX       = clang++
+#CXXFLAGS += -stdlib=libc++
+#LDFLAGS  += -stdlib=libc++
+
 # additional flags
 CPPFLAGS += -I/home/ljh/app/GSL/include/
 CPPFLAGS += -I/home/ljh/app/boost_1_86_0/
-LDFLAGS += -L/home/ljh/app/boost_1_86_0/stage/lib
+LDFLAGS  += -L/home/ljh/app/boost_1_86_0/stage/lib
 
 CXXFLAGS += -std=c++2a -Wall -Wextra -Wpedantic
 CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -Woverflow -Wsign-conversion -Wuninitialized -Wwrite-strings
@@ -2123,25 +2131,19 @@ CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -
 #   "asan+lsan+ubsan is fine, the rest should run separately."  --kcc, Jan 12, 2019
 
 # address (including leak), undefined behavior sanitizers,
-CXXFLAGS += -fsanitize=address -fsanitize=undefined
-LDFLAGS += -fsanitize=address -fsanitize=undefined
+# CXXFLAGS += -fsanitize=address -fsanitize=undefined
+# LDFLAGS += -fsanitize=address -fsanitize=undefined
 
 # thread sanitizer,
-#CXXFLAGS += -fsanitize=thread
-#LDFLAGS += -fsanitize=thread
+# CXXFLAGS += -fsanitize=thread
+# LDFLAGS += -fsanitize=thread
 
 # https://github.com/google/sanitizers/issues/1039#issuecomment-453306241 ,
 #   "GCC doesn't have msan at all."  --kcc, Jan 11, 2019
 
-# memory sanitizer, (gcc has no msan. use clang if needed)
-#CXXFLAGS += -fsanitize=memory -fPIE -pie
-#LDFLAGS += -fsanitize=memory -fPIE -pie
-
-# default C compiler: CC = gcc
-# default C++ compiler: CXX = g++
-# default linker: CC = gcc
-#CC = clang++  # clang, clang++,
-#CXX = clang++  # clang, clang++,
+# memory sanitizer, (gcc has no msan. use clang, clang++, if needed)
+# CXXFLAGS += -fsanitize=memory -fPIE
+# LDFLAGS += -fsanitize=memory -pie
 
 
 ---
