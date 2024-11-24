@@ -2240,13 +2240,97 @@ int main() {
 ---
 
 
-c++ primer 5th, 12.1.4 Smart Pointers and Exceptions:
+
+```
+C++ priemr 5th:
+
+12.1.4 Smart Pointers and Exceptions,
 
 Using Our Own Deletion Code:
 
-It must use the deleter syntax when define smart pointer.
-What the deleter does can not encapsulate in a class destructor function.
-Smart pointer maintains reference count and call the deleter when the count became zero.
+By default, shared_ptrs assume that they point to dynamic memory.
+Hence, by default, when a shared_ptr is destroyed, it executes delete on the pointer it holds.
+To use a shared_ptr to manage a connection, we must first define a function to use in place of delete.
+It must be possible to call this deleter function with the pointer stored inside the shared_ptr.
+In this case, our deleter must take a single argument of type connection*:
+
+    void end_connection(connection *p) { disconnect(*p); }
+
+When we create a shared_ptr,
+we can pass an optional argument that points to a deleter function (§ 6.7, p. 247):
+
+    void f(destination &d /* other parameters */) {
+    connection c = connect(&d);
+    shared_ptr<connection> p(&c, end_connection);
+        // use the connection
+        // when f exits, even if by an exception, the connection will be properly closed
+    }
+
+When p is destroyed, it won’t execute delete on its stored pointer.
+Instead, p will call end_connection on that pointer.
+In turn, end_connection will call disconnect, thus ensuring that the connection is closed.
+If f exits normally, then p will be destroyed as part of the return.
+Moreover, p will also be destroyed, and the connection will be closed, if an exception occurs.
+```
+
+
+```
+// https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines ,
+
+Discussion: Never return or throw while holding a resource not owned by a handle
+Reason That would be a leak.
+
+Example
+
+void f(int i)
+{
+    FILE* f = fopen("a file", "r");
+    ifstream is { "another file" };
+    // ...
+    if (i == 0) return;
+    // ...
+    fclose(f);
+}
+
+If i == 0 the file handle for a file is leaked. On the other hand,
+the ifstream for another file will correctly close its file (upon destruction).
+If you must use an explicit pointer, rather than a resource handle with specific semantics,
+use a unique_ptr or a shared_ptr with a custom deleter:
+
+void f(int i)
+{
+    unique_ptr<FILE, int(*)(FILE*)> f(fopen("a file", "r"), fclose);
+    // ...
+    if (i == 0) return;
+    // ...
+}
+
+Better:
+
+void f(int i)
+{
+    ifstream input {"a file"};
+    // ...
+    if (i == 0) return;
+    // ...
+}
+
+```
+
+
+```
+8.2.1 Using File Stream Objects:
+
+When an fstream object is destroyed, close is called automatically.
+```
+
+
+The deleter is only needed when the non-memory resources
+like file handle, network or database connection, etc., is used directly.
+
+Encapsulate the resource into a class like ifstream,
+call the deleter in the class destructor like the ifstream close the file in its destructor,
+the the deleter usage is not needed.
 
 
 ---
