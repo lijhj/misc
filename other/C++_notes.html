@@ -2114,9 +2114,12 @@ clean: ; $(RM) *.o *.d main
 # use clang for C program:
 #CC        = clang
 
-# use clang++ for C++ program, need ` CC = $(CXX) ` too,
+# use clang++ for C++ program, link with libc++ instead of libstdc++,
+# $ sudo apt install llvm clang lldb libc++-dev libc++abi-dev
 #CXX       = clang++
 #CC        = $(CXX) # link with CXX for .cpp
+#CXXFLAGS += -stdlib=libc++
+#LDFLAGS  += -stdlib=libc++
 
 # additional flags
 CPPFLAGS += -I/home/ljh/app/GSL/include/
