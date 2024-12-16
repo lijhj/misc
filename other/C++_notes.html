@@ -2340,6 +2340,30 @@ which can not be replaced by destructor directly.
 ---
 
 
+$ gdb a.out core.1234
+$ gdb
+) file a.out
+) core-file core.1234
+) set args foo 100
+) b 5 # break
+) b main.cpp:5
+) run
+) run < input.txt # input redirect
+) n # next # step over
+) s # step # step into
+) finish # step out
+) continue
+) print variable_x
+) where
+) list
+) bt # backtrace
+) quit
+$
+
+
+---
+
+
 // strcpy, K&R C, chapter 5.5 ,
 
 void strcpy(char *s, char *t) {
@@ -2434,7 +2458,12 @@ ListNode* reverseList(ListNode* head) {
   return prev;
 }
 
+
 ---
+
+
+
+
 
 
 
