@@ -1860,6 +1860,115 @@ Situations where constant-time access is needed, specialized processing systems;
 ---
 
 
+// c++, character set, encoding, locale, ascii, gbk, unicode utf,
+// cjk, chinese, japanese, korean,
+// icu, utfcpp, gnu iconv,
+
+/*
+
+1. std::locale::global is for standard io, stdin, stdout, stderr;
+2. imbue is for file specific file stream;
+3. SetConsoleOutputCP, SetConsoleCP: for console stdin stdout on Windows;
+
+$ locale
+LANG="en_US.UTF-8"
+$
+$ locale -a | vi -
+$
+$ file -i cjk中文.txt
+cjk中文.txt: text/plain; charset=utf-8
+$
+$ iconv -l | vi -
+$
+$ sudo dpkg-reconfigure locales # debian
+$
+
+C:\> chcp
+936
+C:\>
+
+*/
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <locale>
+#include <codecvt>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+int main() {
+    // std::locale::global(std::locale("")); // use default locale
+    // std::locale::global(std::locale("en_US.UTF-8")); // use utf-8
+
+    // Set global locale to GBK (for handling CJK characters)
+    std::locale::global(std::locale("zh_CN.GBK"));
+
+#ifdef _WIN32
+    // Windows-specific console setup for CJK character handling
+    // learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers ;
+
+    // SetConsoleOutputCP(65001); // utf-8
+    // SetConsoleCP(65001);       // utf-8
+
+    SetConsoleOutputCP(936); // chinese GBK
+    SetConsoleCP(936);       // chinese GBK
+
+#endif
+
+    // Get the filename from the user (CJK characters supported)
+    std::wcout << L"Enter filename (e.g., 你好hello世界.txt): ";
+    std::wstring filename;
+    std::getline(std::wcin, filename);
+
+    // Open/create the file
+    std::wofstream outfile;
+
+    // outfile.imbue(std::locale("en_US.UTF-8")); // Set locale for file stream
+
+    outfile.imbue(std::locale("zh_CN.GBK")); // Set locale for file stream (GBK encoding)
+    outfile.open(filename);
+
+    if (!outfile.is_open()) {
+        std::wcerr << L"Failed to open or create the file.\n";
+        return 1;
+    }
+
+    // Write a CJK string to the file
+    std::wstring text = L"你好hello世界";
+    outfile << text << std::endl;
+    outfile.close();
+
+    // Now read the content from the file
+    std::wifstream infile;
+
+    // outfile.imbue(std::locale("en_US.UTF-8")); // Set locale for file stream
+
+    infile.imbue(std::locale("zh_CN.GBK")); // Set locale for file stream
+    infile.open(filename);
+
+    if (!infile.is_open()) {
+        std::wcerr << L"Failed to open the file for reading.\n";
+        return 1;
+    }
+
+    // Output the file content to the console
+    std::wstring line;
+    while (std::getline(infile, line)) {
+        std::wcout << L"Read from file: " << line << std::endl;
+    }
+
+    infile.close();
+
+    return 0;
+}
+
+
+---
+
+
 both compile and link should be with address sanitizer:
 $ make -C src/main
 c++ -fsanitize=address -Wall -Wextra -std=c++2a -g  -MMD -MP  -c -o main.o main.cpp
