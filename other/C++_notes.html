@@ -619,7 +619,7 @@ int main() {
   // 1. error: {1,2,3} is temporary, and i is a local copy,
   // for (auto i : {1, 2, 3}) {
 
-    // 2. error: const lvalue reference extends teomporary only within for loop,
+  // 2. error: const lvalue reference extends teomporary only within for loop,
   // for (const auto &i : {1, 2, 3}) {
 
   // 3. error: i is a local copy of element in v2,
