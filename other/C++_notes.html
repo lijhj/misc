@@ -2265,8 +2265,11 @@ clean: ; $(RM) *.o *.d main
 #CXXFLAGS += -stdlib=libc++
 #LDFLAGS  += -stdlib=libc++
 
-# fully static link: libstdc++.so , libc.so , etc. ,
+# fully static link: libc6 , libstdc++6 , etc. ,
 #LDFLAGS  += -static
+
+# static link: libfoo.a , dynamic link: libbar.so ,
+#LDFLAGS  += -Wl,-Bstatic -lfoo -Wl,-Bdynamic -lbar
 
 # additional flags
 CPPFLAGS += -I/home/ljh/app/GSL/include/
