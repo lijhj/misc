@@ -2262,13 +2262,15 @@ clean: ; $(RM) *.o *.d main
 # $ make libfoo.a
 (%) : % ;
 %.a : ; $(AR) $(ARFLAGS) $@ $?
+
+# non archive(member) syntax
 #ARFLAGS = rv
+# gnu make manual 10.5.3 automatic variable `$?`
 libfoo.a: $(patsubst %.c,%.o,$(wildcard *.c)) # .cpp
 
-# a(m) syntax requires ar option `U`
+# archive(member) syntax `a(m)` requires ar 2.43 option `U` on debian 12
 #ARFLAGS = rvU
 #libfoo.a: libfoo.a($(patsubst %.c,%.o,$(wildcard *.c))) # .cpp
-
 
 # use clang for C program:
 #CC        = clang
