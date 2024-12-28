@@ -2258,12 +2258,16 @@ main: $(patsubst %.c,%.o,$(wildcard *.c)) # .cpp
 clean: ; $(RM) *.o *.d main
 .PHONY: clean
 
-# archive static library
+# archive static library target filename suffix is `.a`
 # $ make libfoo.a
-#ARFLAGS = rv
 (%) : % ;
 %.a : ; $(AR) $(ARFLAGS) $@ $?
+#ARFLAGS = rv
 libfoo.a: $(patsubst %.c,%.o,$(wildcard *.c)) # .cpp
+
+# a(m) syntax requires ar option `U`
+#ARFLAGS = rvU
+#libfoo.a: libfoo.a($(patsubst %.c,%.o,$(wildcard *.c))) # .cpp
 
 
 # use clang for C program:
