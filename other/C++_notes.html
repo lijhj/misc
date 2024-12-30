@@ -2317,6 +2317,37 @@ CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -
 ---
 
 
+# gnu make manual, chapter 10.2 Catalogue of Built-In Rules
+# To see the full list of default rules and variables available in your version of GNU make,
+# run ‘make -p’ in a directory with no makefile.
+# or in vim :r !make -p
+
+# the implicit rule which is built-in gnu make for updating archive is:
+
+  (%): %
+  #  recipe to execute (built-in):
+    $(AR) $(ARFLAGS) $@ $<
+
+# it needs the archive(member) syntax
+# and the ar option U on gnu linux to trigger it
+
+  ARFLAGS = rvU
+  libfoo.a: libfoo.a($(patsubst %.c,%.o,$(wildcard *.c)))
+
+# the non archive(member) syntax is also mentioned
+# in gnu make manual, chapter 10.5.3 Automatic Variables: $? as below
+
+  lib: foo.o bar.o lose.o win.o
+    ar r lib $?
+
+# so this also works for updating archive:
+
+  libfoo.a: $(patsubst %.c,%.o,$(wildcard *.c))
+
+
+---
+
+
 # https://www.jetbrains.com/help/clion/google-sanitizers.html ,
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=[sanitizer_name] -g")
