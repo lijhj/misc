@@ -2328,7 +2328,7 @@ LDFLAGS  = # -L../foo -shared -static
 LDLIBS   = # -lfoo
 #CC      = $(CXX) # link with CXX for .cpp
 
-all : main libfoo.a libfoo.so
+all : main libfoo.so libfoo.a
 
 # target name is basename of one of the source files
 main : $(patsubst %.c,%.o,$(wildcard *.c)) # .cpp
@@ -2343,7 +2343,7 @@ libfoo.a : libfoo.a($(patsubst %.c,%.o,$(wildcard *.c))) # .cpp
 
 -include *.d
 
-clean : ; $(RM) *.o *.d main libfoo.a libfoo.so
+clean : ; $(RM) *.o *.d main libfoo.so libfoo.a
 .PHONY : all clean
 
 
