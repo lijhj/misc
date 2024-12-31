@@ -2346,7 +2346,7 @@ libfoo.a : libfoo.a($(patsubst %.c,%.o,$(wildcard *.c))) # .cpp
 -include *.d
 
 clean : ; $(RM) *.o *.d main libfoo.a libfoo.so
-.PHONY : clean
+.PHONY : all clean
 
 
 ---
