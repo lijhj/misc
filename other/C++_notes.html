@@ -2317,6 +2317,41 @@ CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -
 ---
 
 
+# Makefile example to build:
+# executable,
+# shared object dynamic library,
+# archive static library
+
+# build dynamic library with -fPIC -shared
+CFLAGS   = -g -fPIC # -O3 -fPIC # CXXFLAGS for .cpp
+CPPFLAGS = -MMD -MP # -I../foo -DNDEBUG
+LDFLAGS  = -shared # -L../foo -shared -static
+LDLIBS   = # -lfoo
+#CC      = $(CXX) # link with CXX for .cpp
+ARFLAGS  = -rvU
+
+all : main libfoo.a libfoo.so
+
+# target name is basename of one of the source files
+main : $(patsubst %.c,%.o,$(wildcard *.c)) # .cpp
+
+%.so : ; $(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+libfoo.so : $(patsubst %.c,%.o,$(wildcard *.c)) # .cpp
+
+# fully static link archive .a with -static
+(%) : % ;
+%.a : ; $(AR) $(ARFLAGS) $@ $?
+libfoo.a : libfoo.a($(patsubst %.c,%.o,$(wildcard *.c))) # .cpp
+
+-include *.d
+
+clean : ; $(RM) *.o *.d main libfoo.a libfoo.so
+.PHONY : clean
+
+
+---
+
+
 # gnu make manual, chapter 10.2 Catalogue of Built-In Rules
 # To see the full list of default rules and variables available in your version of GNU make,
 # run ‘make -p’ in a directory with no makefile.
@@ -2329,7 +2364,9 @@ CXXFLAGS += -Warith-conversion -Wcast-qual -Wconversion -Wfloat-equal -Wformat -
     $(AR) $(ARFLAGS) $@ $<
 
 # it needs the archive(member) syntax
-# and the ar option U on gnu linux to trigger it
+# and the ar option U on gnu linux to trigger it,
+# with the ar Option U, the timestamp is taken into account.
+# make utility needs the timestamp to tell if prerequisites are newer than target.
 
   ARFLAGS = rvU
   libfoo.a: libfoo.a($(patsubst %.c,%.o,$(wildcard *.c)))
