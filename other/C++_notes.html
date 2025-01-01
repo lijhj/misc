@@ -2350,6 +2350,37 @@ clean : ; $(RM) *.o *.d main libfoo.so libfoo.a
 ---
 
 
+1.
+
+libfoo.a : libfoo.a($(patsubst %.c,%.o,$(wildcard *.c))) # .cpp
+
+If the static library archive is the only target of .o object files,
+in the first build when the archive does not exist, after create the new archive,
+the object files will be removed.
+When the archive already exists, the next build will replace the object archive(member),
+and the .o object files are not removed anymore.
+
+2.
+
+For ar utility on GNU Linux, when ARFLAGS is without U,
+it is the deterministic mode or reproducible build archive.
+the timestamp of the object archive(member) is reset to zero in the target.
+It renders the target being always outdated and rebuilds the target.
+
+$ ar -tv libfoo.a
+rw-r--r-- 0/0  78776 Jan  1 08:00 1970 foo.o
+$
+
+When the ARFLAGS is with U, the timestamp is kept in archive(member) in the target.
+
+$ ar -tv libfoo.a
+rw-rw-r-- 1000/1000  78776 Jan  1 23:49 2025 foo.o
+$
+
+
+---
+
+
 # gnu make manual, chapter 10.2 Catalogue of Built-In Rules
 # To see the full list of default rules and variables available in your version of GNU make,
 # run ‘make -p’ in a directory with no makefile.
