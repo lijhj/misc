@@ -2411,26 +2411,29 @@ $
   libfoo.a: $(patsubst %.c,%.o,$(wildcard *.c))
 
 
-  ---
+---
 
 
-  # what if library file name is just `foo`,
-  # and does not have prefix `lib` and suffix `.so` , `.a` ,
-  # which are not like: libfoo.so , libfoo.a ,
+# what if library file name is just `foo`,
+# and does not have prefix `lib` and suffix `.so` , `.a` ,
+# and filename is not like: libfoo.so , libfoo.a ,
 
-  1. make symbolic link for them
+1. make symbolic link for them
 
-  $ ln -sf foo libfoo.a
-  $ ln -sf foo libfoo.so
+$ ln -sf foo libfoo.a
+$ ln -sf foo libfoo.so
 
-  2. or use the colon : with -l and followed by the exact full filename,
+2. or use `-l:foo` with colon : and followed by the exact full filename,
+  this works even for the filename with prefix and suffix too,
 
-  LDLIBS   = -l:foo
+LDLIBS   = -l:foo
+LDLIBS   = -l:libfoo.a
+LDLIBS   = -l:libfoo.so
 
-  this work even for the filenames with prefix and suffix too,
-
-  LDLIBS   = -l:libfoo.a
-  LDLIBS   = -l:libfoo.so
+3. but `-lfoo` without colon : can be easily switch between .so and .a ,
+  if -static is used, it links to .a automatically,
+LDFLAGS += # -static
+LDLIBS   = -l:foo
 
 
 ---
