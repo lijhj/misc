@@ -2810,6 +2810,91 @@ ListNode* reverseList(ListNode* head) {
 ---
 
 
+// iSH, Alphine, Linux, iOS, iPhone, iPadOS,
+
+https://github.com/ish-app/ish ,
+
+$ vi /etc/apk/repositories
+# default
+#http://dl-cdn.alpinelinux.org/alpine/v3.12/main
+#http://dl-cdn.alpinelinux.org/alpine/v3.12/community
+
+# 清华源
+# keep version number "n.nn" same as the existing ones in file
+http://mirrors.tuna.tsinghua.edu.cn/alpine/v3.12/main
+http://mirrors.tuna.tsinghua.edu.cn/alpine/v3.12/community
+
+#[ iSH v1.2.3 已内置 apk, 不再需要此下载
+# $ tar xf apk-tools-static-2.10.5-r1.apk
+# $ ./sbin/apk.static add apk-tools
+#]
+
+$ apk update
+$ apk upgrade
+$ apk add build-base alpine-sdk gdb bash openssh vim sudo shadow abuild alpine-conf tzdata samba util-linux boost boost-dev
+
+$ apk add man-pages mandoc gcc-doc gdb-doc coreutils-doc binutils-doc busybox-doc shadow-doc bash-doc
+
+$ adduser -h /home/ljh ljh
+$ addgroup ljh wheel
+$ usermod -aG wheel ljh
+$ sg wheel
+
+$ bash
+$ sudo vi /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+$
+
+# $ sudo chsh -s /bin/bash ljh
+
+$ vi .bash_profile
+PS1='\$ '
+set -o vi
+export HISTCONTROL="ignoredups:erasedups:ignorespace"
+export PROMPT_COMMAND='history -a'
+$
+
+$ vi .inputrc
+set editing-mode vi
+$
+
+$ apk info -L boost-dev  # 文件路径
+$ apk info --who-owns /bin/ls  # 归属包
+/bin/ls .. is owned by busybox-1.xx
+$ apk info -R build-base  # 依赖包
+
+# list package content
+# install destination path
+$ apk info -L boost-dev
+boost-dev-1.72.0-r6 contains:
+usr/include/boost/align.hpp
+...
+usr/lib/libboost_atomic.so
+...
+
+----
+
+vi 打开文档乱码, 用 vim, neovim 代替
+
+----
+
+//man pages wrong characters
+
+$ man chown | vim -M +MANPAGER -
+$
+
+# or,
+$ vi ~/.bashrc
+export MANPAGER="vim -M +MANPAGER -"
+
+$ man chown
+$
+
+
+---
+
+
+
 
 
 
