@@ -2684,6 +2684,17 @@ void strcpy(char *s, char *t) {
 
 ---
 
+// if the pivot selection does not evenly partition the elements every time,
+// the recursion goes deeper which makes the quick sort perform worse.
+// this is similar to unbalanced tree vs. a balanced search tree.
+
+// for cases like already sorted elements, reverse sorted elements,
+// all equal elements, it is better to check all elements in an iteration
+// which is O(n) before perform quick sort to avoid falling into the worst O(n^2).
+// this is why the C qsort and c++ std::sort are both not just quick sort,
+// they both are combination of hybrid methods.
+//
+
 // quick sort, K&R C, chapter 4.10 ,
 // how to understand the qsort implementation in K&R C 2nd:
 // 1. it seems that it only handles the smaller elements explicitly,
